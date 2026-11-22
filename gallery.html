@@ -13,10 +13,28 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(600px 400px at 15% 0%,rgba(225,29,46,.12),transparent 60%),radial-gradient(700px 500px at 85% 100%,rgba(225,29,46,.10),transparent 60%);animation:bgDrift 20s ease-in-out infinite alternate}
+  @keyframes bgDrift{from{opacity:.5}to{opacity:1;background-position:6% 10%,92% 88%}}
+  main,header{position:relative;z-index:1}
   a{color:inherit}
   a:focus-visible,button:focus-visible{outline:2px solid var(--red-2);outline-offset:3px;border-radius:4px}
   ::selection{background:rgba(225,29,46,.55);color:#fff}
+
+  /* ---- Custom cursor ---- */
+  body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .logo{cursor:none}
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%}
+  .cursor-dot{width:8px;height:8px;margin:-4px 0 0 -4px;background:var(--red-2);box-shadow:0 0 12px var(--red),0 0 24px rgba(225,29,46,.6);will-change:transform}
+  .cursor-ring{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;border:1.5px solid rgba(255,46,63,.85);background:transparent;transition:transform .12s ease-out;will-change:transform}
+  .cursor-ring.is-hover{transform:scale(1.5);border-color:var(--red-2);box-shadow:0 0 12px rgba(225,29,46,.8)}
+  @media (hover:none),(pointer:coarse){ .cursor-dot,.cursor-ring{display:none} }
+
+  /* ---- Global particles ---- */
+  .global-particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+  /* ---- Section line divider ---- */
+  .section-line{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.55;box-shadow:0 0 14px rgba(225,29,46,.5)}
+
   .container{width:min(1080px,92%);margin:0 auto}
 
   header{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
@@ -68,6 +86,14 @@
   @media (max-width:640px){.lb-prev{left:-6px}.lb-next{right:-6px}.lb-nav{width:40px;height:40px;font-size:1.1rem}.lb-close{top:-40px}}
 
   @media (max-width:560px){.nav-links{gap:12px;font-size:.8rem}}
+
+  /* ---- Marquee ---- */
+  .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;background:var(--bg-2)}
+  .marquee-track{display:flex;white-space:nowrap;will-change:transform;animation:marqueeScroll 22s linear infinite;width:max-content}
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  .marquee-track span{font-size:1.4rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:0 24px;color:var(--muted)}
+  .marquee-track .m-accent{background:linear-gradient(90deg,var(--red-2),var(--red));-webkit-background-clip:text;background-clip:text;color:transparent}
+  @keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -88,12 +114,19 @@
 
 <main>
   <section class="page-hero">
+    <div class="section-line" aria-hidden="true"></div>
     <div class="container">
       <span class="eyebrow">Скриншоты и арты</span>
       <h1>Галерея</h1>
       <p>Кадры из моих модов и настроение моего мира. Скоро добавлю настоящие скриншоты — кликни по карточке, чтобы увеличить.</p>
     </div>
   </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Speed</span><span class="m-accent">•</span><span>Drift</span><span class="m-accent">•</span><span>Minecraft</span><span class="m-accent">•</span><span>Mods</span><span class="m-accent">•</span><span>KillanderRRY</span><span class="m-accent">•</span><span>Speed</span><span class="m-accent">•</span><span>Drift</span><span class="m-accent">•</span><span>Minecraft</span><span class="m-accent">•</span><span>Mods</span><span class="m-accent">•</span><span>KillanderRRY</span><span class="m-accent">•</span>
+    </div>
+  </div>
 
   <section>
     <div class="container">
@@ -126,6 +159,68 @@
 </div>
 
 <script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  if (!reduceMotion && finePointer) {
+    document.body.classList.add('has-cursor');
+    const dot = document.createElement('div'); dot.className = 'cursor-dot';
+    const ring = document.createElement('div'); ring.className = 'cursor-ring';
+    document.body.appendChild(dot); document.body.appendChild(ring);
+    let mx = -100, my = -100, rx = mx, ry = my;
+    window.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+      ring.classList.toggle('is-hover', !!e.target.closest('a,button,.g-item,.lb-close,.lb-nav,input,select,textarea,label'));
+    }, { passive: true });
+    (function ringLoop(){ rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16; ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)'; requestAnimationFrame(ringLoop); })();
+
+    const trailCv = document.createElement('canvas');
+    trailCv.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9997';
+    document.body.appendChild(trailCv);
+    const tctx = trailCv.getContext('2d');
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const tResize = () => { trailCv.width = innerWidth * dpr; trailCv.height = innerHeight * dpr; };
+    tResize(); window.addEventListener('resize', tResize);
+    function makeGlow(){ const tb = document.createElement('canvas'); tb.width = tb.height = 20; const c = tb.getContext('2d'); const g = c.createRadialGradient(10,10,0,10,10,8); g.addColorStop(0,'rgba(255,46,63,0.6)'); g.addColorStop(0.5,'rgba(225,29,46,0.22)'); g.addColorStop(1,'rgba(225,29,46,0)'); c.fillStyle = g; c.fillRect(0,0,20,20); c.filter = 'blur(2px)'; c.drawImage(tb,0,0); return tb; }
+    const trailGlow = makeGlow(); const trailPos = [];
+    (function trailLoop(){
+      tctx.setTransform(dpr,0,0,dpr,0,0); tctx.clearRect(0,0,trailCv.width,trailCv.height);
+      trailPos.forEach((p) => { tctx.globalAlpha = p.a; tctx.drawImage(trailGlow, p.x-8, p.y-8, 16, 16); });
+      tctx.globalAlpha = 1;
+      if (trailPos.length){ const last = trailPos[trailPos.length-1]; trailPos.push({x:last.x,y:last.y,a:last.a*0.6}); if (trailPos.length>22) trailPos.splice(0,trailPos.length-22); trailPos.forEach((p)=>{p.a*=0.88;}); }
+      requestAnimationFrame(trailLoop);
+    })();
+    let lastX=-999,lastY=-999;
+    window.addEventListener('mousemove',(e)=>{ const dx=e.clientX-lastX, dy=e.clientY-lastY; if(dx*dx+dy*dy>3){ trailPos.push({x:e.clientX,y:e.clientY,a:0.5}); lastX=e.clientX; lastY=e.clientY; } },{passive:true});
+  }
+
+  if (!reduceMotion) {
+    const gpCv = document.createElement('canvas');
+    gpCv.className = 'global-particles';
+    document.body.appendChild(gpCv);
+    const gctx = gpCv.getContext('2d');
+    const gdpr = Math.min(devicePixelRatio || 1, 2);
+    let gparts;
+    const gResize = () => {
+      gpCv.width = innerWidth * gdpr; gpCv.height = innerHeight * gdpr;
+      const n = Math.min(50, Math.floor(innerWidth / 28));
+      gparts = Array.from({ length: n }, () => ({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 0.6+Math.random()*1.8, s: 0.08+Math.random()*0.35, alpha: 0.1+Math.random()*0.3, drift: Math.random()*Math.PI*2 }));
+    };
+    gResize(); window.addEventListener('resize', gResize);
+    let gt = 0;
+    (function gLoop(){
+      gt += 0.01;
+      gctx.setTransform(gdpr,0,0,gdpr,0,0); gctx.clearRect(0,0,innerWidth,innerHeight);
+      gparts.forEach((p) => {
+        p.y -= p.s; p.x += Math.sin(gt + p.drift) * 0.2;
+        if (p.y < -10) { p.y = innerHeight + 10; p.x = Math.random() * innerWidth; }
+        gctx.beginPath(); gctx.fillStyle = 'rgba(170,24,35,' + p.alpha + ')'; gctx.arc(p.x, p.y, p.r, 0, Math.PI*2); gctx.fill();
+      });
+      requestAnimationFrame(gLoop);
+    })();
+  }
+
   const items = Array.from(document.querySelectorAll('.g-item'));
   const lb = document.getElementById('lightbox');
   const lbCap = document.getElementById('lb-cap');
