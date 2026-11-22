@@ -169,7 +169,7 @@
 
   /* ---- Scroll indicator ---- */
   .scroll-hint{
-    position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+    position:absolute;left:50%;bottom:76px;transform:translateX(-50%);
     width:26px;height:42px;border:2px solid rgba(225,29,46,.7);border-radius:14px;
     display:flex;justify-content:center;padding-top:6px;z-index:2;
   }
@@ -179,7 +179,7 @@
   }
   @keyframes hintDrop{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
   .scroll-hint{animation:hintFloat 2.4s ease-in-out infinite}
-  @keyframes hintFloat{0%,100%{bottom:26px}50%{bottom:34px}}
+  @keyframes hintFloat{0%,100%{bottom:76px}50%{bottom:84px}}
 
   /* ---- Hero particles canvas ---- */
   .hero-canvas{position:absolute;inset:0;z-index:-1;pointer-events:none}
@@ -297,7 +297,7 @@
   }
 
   /* ---- Marquee ---- */
-  .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;background:linear-gradient(180deg,transparent,var(--bg-2) 30%);margin-top:-40px;position:relative;z-index:2}
+  .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;background:var(--bg-2);margin-top:-40px;position:relative;z-index:2}
   .marquee-track{display:flex;gap:0;white-space:nowrap;will-change:transform;animation:marqueeScroll 22s linear infinite;width:max-content}
   .marquee:hover .marquee-track{animation-play-state:paused}
   .marquee-track span{
