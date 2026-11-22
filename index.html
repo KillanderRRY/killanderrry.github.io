@@ -91,12 +91,12 @@
   .hero-inner > :nth-child(4){animation-delay:.46s}
   @keyframes heroIn{from{transform:translateY(18px)}to{opacity:1;transform:none}}
 
-  .hero{animation:heroBg 30s linear infinite}
+  .hero{animation:heroBg 30s ease-in-out infinite alternate}
   @keyframes heroBg{
-    from{background-size:auto 115%;background-position:0 5%}
-    to{background-size:auto 115%;background-position:100% 5%}
+    from{background-size:cover;background-position:0% center}
+    to{background-size:cover;background-position:10% center}
   }
-  .hero{background-repeat:repeat-x}
+  .hero{background-repeat:no-repeat}
   .eyebrow{
     display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:2px;
     color:var(--red-2);text-transform:uppercase;margin-bottom:16px;
@@ -297,7 +297,7 @@
   }
 
   /* ---- Marquee ---- */
-  .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;background:var(--bg-2);margin-top:-40px;position:relative;z-index:2}
+  .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;background:linear-gradient(180deg,transparent,var(--bg-2) 30%);margin-top:-40px;position:relative;z-index:2}
   .marquee-track{display:flex;gap:0;white-space:nowrap;will-change:transform;animation:marqueeScroll 22s linear infinite;width:max-content}
   .marquee:hover .marquee-track{animation-play-state:paused}
   .marquee-track span{
