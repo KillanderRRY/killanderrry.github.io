@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Скачать — KillanderRRY</title>
+<meta name="description" content="Скачай моды KillanderRRY для Minecraft. Инструкция по установке и кнопки загрузки.">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--shadow:0 20px 50px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--red-2);outline-offset:3px;border-radius:4px}
+  ::selection{background:rgba(225,29,46,.55);color:#fff}
+  .container{width:min(1080px,92%);margin:0 auto}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;letter-spacing:.5px;text-decoration:none}
+  .logo span{color:var(--red)}
+  .nav-links{display:flex;gap:20px;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--red-2)}
+
+  .page-hero{padding:72px 0 40px;text-align:center;position:relative;overflow:hidden}
+  .page-hero::before{content:"";position:absolute;inset:auto -20% -60% -20%;height:70%;background:radial-gradient(ellipse at center,rgba(225,29,46,.2),transparent 65%);filter:blur(20px);pointer-events:none}
+  .eyebrow{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:2px;color:var(--red-2);text-transform:uppercase;margin-bottom:14px}
+  .page-hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;letter-spacing:-1px;line-height:1.1}
+  .page-hero p{color:var(--muted);max-width:52ch;margin:16px auto 0}
+
+  .stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:34px 0 14px}
+  .pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:10px 18px;font-size:.88rem;color:var(--muted);backdrop-filter:blur(6px)}
+  .pill b{color:var(--text)}
+
+  .dl-list{max-width:680px;margin:26px auto 0;display:flex;flex-direction:column;gap:18px;padding-bottom:80px}
+  .dl-card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:24px;display:flex;align-items:center;gap:20px;transition:border-color .22s,transform .22s,box-shadow .22s;
+  }
+  .dl-card:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 18px 40px rgba(225,29,46,.12)}
+  .dl-ico{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--red),#2a0a0e);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;flex-shrink:0}
+  .dl-info{flex:1;min-width:0}
+  .dl-info h3{font-size:1.1rem;font-weight:700}
+  .dl-info p{color:var(--muted);font-size:.9rem}
+  .dl-btn{
+    display:inline-block;background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;
+    padding:11px 22px;border-radius:10px;font-weight:700;text-decoration:none;white-space:nowrap;
+    transition:transform .18s,box-shadow .18s;box-shadow:0 8px 22px rgba(225,29,46,.35);
+  }
+  .dl-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(225,29,46,.5)}
+  .dl-btn.disabled{opacity:.45;pointer-events:none}
+
+  .howto{max-width:680px;margin:0 auto 90px}
+  .howto h2{font-size:1.4rem;margin-bottom:20px;text-align:center}
+  .step{display:flex;gap:18px;margin-bottom:18px;align-items:flex-start}
+  .step-num{
+    width:40px;height:40px;border-radius:50%;flex-shrink:0;
+    background:rgba(225,29,46,.14);border:1px solid rgba(225,29,46,.4);color:var(--red-2);
+    display:flex;align-items:center;justify-content:center;font-weight:800;
+  }
+  .step p{color:var(--muted)}
+  .step b{color:var(--text)}
+
+  @media (max-width:560px){
+    .nav-links{gap:12px;font-size:.8rem}
+    .dl-card{flex-wrap:wrap}
+    .stats{gap:10px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo">Killander<span>RRY</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="mods.html">Моды</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="download.html" class="active">Скачать</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Загрузки</span>
+      <h1>Скачать моды</h1>
+      <p>Когда первый мод будет готов, здесь появится кнопка загрузки. Следи за обновлениями — уже скоро!</p>
+      <div class="stats">
+        <div class="pill">Загрузок <b>0</b></div>
+        <div class="pill">Версия <b>скоро</b></div>
+        <div class="pill">Формат <b>.jar</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="dl-list">
+        <div class="dl-card">
+          <div class="dl-ico">⛏️</div>
+          <div class="dl-info">
+            <h3>Мой первый мод</h3>
+            <p>Скоро будет доступен. Зайди чуть позже.</p>
+          </div>
+          <a class="dl-btn disabled" href="#">Скоро</a>
+        </div>
+      </div>
+
+      <div class="howto">
+        <h2>Как установить мод</h2>
+        <div class="step">
+          <div class="step-num">1</div>
+          <p><b>Скачай файл.</b> Нажми кнопку загрузки — файл .jar появится в папке «Загрузки».</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <p><b>Открой папку mods.</b> Запусти Minecraft с Forge или Fabric, в меню «Моды» нажми «Открыть папку модов».</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <p><b>Перемести файл.</b> Положи .jar в папку mods и перезапусти игру.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <p><b>Проверь.</b> Мод появится в списке модов в главном меню.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

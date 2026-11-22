@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Моды — KillanderRRY</title>
+<meta name="description" content="Каталог модов KillanderRRY для Minecraft. Скоро здесь появятся все мои моды.">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--shadow:0 20px 50px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--red-2);outline-offset:3px;border-radius:4px}
+  ::selection{background:rgba(225,29,46,.55);color:#fff}
+  .container{width:min(1080px,92%);margin:0 auto}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;letter-spacing:.5px;text-decoration:none}
+  .logo span{color:var(--red)}
+  .nav-links{display:flex;gap:20px;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--red-2)}
+
+  .page-hero{position:relative;padding:72px 0 40px;text-align:center;overflow:hidden}
+  .page-hero::before{content:"";position:absolute;inset:auto -20% -60% -20%;height:70%;background:radial-gradient(ellipse at center,rgba(225,29,46,.22),transparent 65%);filter:blur(20px);pointer-events:none}
+  .eyebrow{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:2px;color:var(--red-2);text-transform:uppercase;margin-bottom:14px}
+  .page-hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;letter-spacing:-1px;line-height:1.1}
+  .page-hero p{color:var(--muted);max-width:52ch;margin:16px auto 0}
+
+  .stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:34px 0 10px}
+  .pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:10px 18px;font-size:.88rem;color:var(--muted);backdrop-filter:blur(6px)}
+  .pill b{color:var(--text)}
+
+  .filters{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:36px 0}
+  .filter-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:9px 18px;font-weight:600;font-size:.9rem;cursor:pointer;transition:.2s;font-family:inherit}
+  .filter-btn:hover{border-color:var(--red);color:var(--text)}
+  .filter-btn.active{background:linear-gradient(135deg,var(--red),var(--red-2));border-color:transparent;color:#fff}
+
+  .mods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;padding-bottom:80px}
+  .mod-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:relative;transition:transform .22s,border-color .22s,box-shadow .22s}
+  .mod-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent);opacity:0;transition:opacity .3s}
+  .mod-card:hover{transform:translateY(-6px);border-color:var(--red);box-shadow:0 22px 50px rgba(225,29,46,.16)}
+  .mod-card:hover::before{opacity:1}
+  .mod-thumb{aspect-ratio:16/9;background:#101014;display:flex;align-items:center;justify-content:center;color:#3a3a45;font-style:italic}
+  .mod-body{padding:22px;display:flex;flex-direction:column;gap:10px}
+  .mod-tags{display:flex;gap:8px;flex-wrap:wrap}
+  .tag{font-size:.72rem;font-weight:700;letter-spacing:.5px;color:#ffd9dd;background:rgba(225,29,46,.14);border:1px solid rgba(225,29,46,.35);padding:4px 10px;border-radius:999px;text-transform:uppercase}
+  .mod-body h3{font-size:1.15rem;font-weight:700}
+  .mod-body p{color:var(--muted);font-size:.93rem;flex:1}
+  .mod-link{color:var(--red-2);font-weight:700;font-size:.9rem;text-decoration:none}
+  .mod-link:hover{text-decoration:underline}
+
+  .empty{text-align:center;color:var(--muted);padding:60px 0 100px;display:none}
+
+  @media (max-width:560px){
+    .nav-links{gap:12px;font-size:.8rem}
+    .stats{gap:10px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo">Killander<span>RRY</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="mods.html" class="active">Моды</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="download.html">Скачать</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Каталог</span>
+      <h1>Мои моды</h1>
+      <p>Здесь соберутся все моды, которые я делаю для Minecraft. Пока я готовлю первый — но скоро добавлю ещё.</p>
+      <div class="stats">
+        <div class="pill">Модов <b>1</b></div>
+        <div class="pill">В работе <b>2+</b></div>
+        <div class="pill">Обновлений <b>скоро</b></div>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">Все</button>
+        <button class="filter-btn" data-filter="tech">Техника</button>
+        <button class="filter-btn" data-filter="gameplay">Геймплей</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="mods-grid" id="mods-grid">
+        <article class="mod-card" data-cat="tech">
+          <div class="mod-thumb">изображение скоро</div>
+          <div class="mod-body">
+            <div class="mod-tags"><span class="tag">Новый мод</span></div>
+            <h3>Мод в разработке</h3>
+            <p>Карточка заполнится, когда мод будет готов: название, описание, скриншоты и ссылка на скачивание.</p>
+            <a class="mod-link" href="download.html">Скачать скоро →</a>
+          </div>
+        </article>
+      </div>
+      <div class="empty" id="empty">Пока нет модов в этой категории — скоро появятся.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const btns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.mod-card');
+  const empty = document.getElementById('empty');
+  btns.forEach((b) => b.addEventListener('click', () => {
+    btns.forEach((x) => x.classList.remove('active'));
+    b.classList.add('active');
+    const f = b.dataset.filter;
+    let shown = 0;
+    cards.forEach((c) => {
+      const show = f === 'all' || c.dataset.cat === f;
+      c.style.display = show ? '' : 'none';
+      if (show) shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+  }));
+</script>
+</body>
+</html>
