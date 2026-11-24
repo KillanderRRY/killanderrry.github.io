@@ -1,0 +1,203 @@
+/* KillanderRRY — общие визуалы (site-vfx.js + подключается на все страницы) */
+
+/* ===== 5. Параллакс фона ===== */
+.parallax{will-change:transform}
+
+/* ===== 3. Подъём карточек при ховере (свечение края) ===== */
+.card-lift{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease !important}
+.card-lift:hover{transform:translateY(-6px) !important;box-shadow:0 26px 60px rgba(var(--a),.28),0 0 0 1px rgba(var(--a),.45) !important;border-color:rgba(var(--a),.5) !important}
+
+/* ===== 10. Градиентный текст (акцент) ===== */
+.grad-text{
+  background:linear-gradient(100deg,var(--red),#ff8a5b,var(--red-2),#ffb35c,var(--red));
+  background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:gradShift 6s linear infinite;
+}
+@keyframes gradShift{to{background-position:200% center}}
+
+/* ===== 9. Неоновое свечение текста ===== */
+.neon-text{color:var(--red-2);text-shadow:0 0 6px rgba(var(--a),.9),0 0 18px rgba(var(--a),.55),0 0 38px rgba(var(--a),.35);transition:text-shadow .3s}
+.neon-text:hover{text-shadow:0 0 8px rgba(var(--a),1),0 0 26px rgba(var(--a),.8),0 0 60px rgba(var(--a),.5)}
+
+/* ===== 7. Числовой счётчик статичная база ===== */
+.stat-num{font-variant-numeric:tabular-nums}
+
+/* ===== 8. Печатающийся текст (typewriter) ===== */
+.tw-wrap{display:inline-block}
+.tw-caret{display:inline-block;width:3px;height:1em;margin-left:2px;background:var(--red-2);vertical-align:-0.12em;animation:twBlink .8s steps(1) infinite}
+@keyframes twBlink{50%{opacity:0}}
+
+/* ===== 11. Градиентный переход между секциями ===== */
+.sec-fade{position:relative;background:linear-gradient(180deg,var(--bg),rgba(var(--a),.06),var(--bg))}
+
+/* ===== 15. Тряска экрана ===== */
+@keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-5px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-3px,-2px)}80%{transform:translate(3px,2px)}}
+.shake{animation:screenShake .4s ease}
+
+/* ===== 18. Толчок кнопки ===== */
+@keyframes btnPush{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(2px) scale(.97)}}
+.push-btn{animation:btnPush .35s ease}
+
+/* ===== 14. Блик на букве K (логотип/mark) ===== */
+.k3d{display:inline-block;color:var(--red-2);position:relative}
+.k3d::after{content:"";position:absolute;inset:-4px;background:radial-gradient(circle at 35% 30%,rgba(var(--a2),.9),rgba(var(--a),.2) 60%,transparent 75%);filter:blur(3px);z-index:-1;animation:kGlow 4s ease-in-out infinite alternate}
+@keyframes kGlow{from{opacity:.5}to{opacity:1}}
+
+/* ===== 12. Штамп / выбитый текст ===== */
+.stamp{
+  display:inline-block;position:relative;font-weight:900;letter-spacing:1px;line-height:1;
+  color:var(--text);text-shadow:2px 2px 0 rgba(var(--a),.35);
+  -webkit-mask-image:radial-gradient(circle,#000 60%,rgba(0,0,0,.6) 75%,transparent 85%);
+          mask-image:radial-gradient(circle,#000 60%,rgba(0,0,0,.6) 75%,transparent 85%);
+}
+.stamp-badge{
+  display:inline-block;position:absolute;top:-14px;right:-46px;transform:rotate(8deg);
+  background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;
+  font-size:.62rem;font-weight:800;letter-spacing:1px;padding:3px 8px;border-radius:3px;
+  box-shadow:0 4px 12px rgba(var(--a),.5);text-transform:uppercase;
+}
+
+/* ===== 13. Пульсация CTA-кнопки ===== */
+.pulse-cta{position:relative}
+.pulse-cta::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid rgba(var(--a),.8);
+  animation:pulseRing 2s ease-out infinite;
+}
+@keyframes pulseRing{0%{transform:scale(1);opacity:.7}70%{transform:scale(1.12);opacity:0}100%{opacity:0}}
+
+/* ===== 19. Бегущая машинка по скролл-шкале ===== */
+.k-car{
+  position:fixed;top:3px;left:0;z-index:61;width:18px;height:12px;pointer-events:none;
+  transform:translateX(-50%);transition:left .15s linear;filter:drop-shadow(0 0 6px rgba(var(--a),.8));
+}
+.k-car svg{display:block;width:18px;height:12px}
+
+/* ===== 20. Переход между страницами ===== */
+body.page-fade{animation:pageFadeIn .45s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+body.page-fade-out{opacity:0;transition:opacity .25s ease}
+
+/* ===== 17. Конфетти при успехе ===== */
+.fx-confetti{position:fixed;inset:0;z-index:98;pointer-events:none;overflow:hidden}
+.fx-confetti span{
+  position:absolute;width:8px;height:8px;border-radius:2px;
+  transform:translate(-50%,-50%);
+  animation:confFly var(--dur, 900ms) cubic-bezier(.15,.6,.4,1) forwards;
+}
+@keyframes confFly{
+  0%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}
+  100%{transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.4) rotate(540deg);opacity:0}
+}
+
+/* ===== 17. Кастомный скроллбар ===== */
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--bg-2)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--red),var(--red-2));border-radius:8px;border:2px solid var(--bg-2)}
+::-webkit-scrollbar-thumb:hover{background:var(--red-2)}
+*{scrollbar-width:thin;scrollbar-color:var(--red) var(--bg-2)}
+
+/* ===== 14. Фон-скорость при скролле (диагональные линии) ===== */
+.speed-bg{position:fixed;inset:-40%;z-index:1;pointer-events:none;opacity:0;transition:opacity .4s ease}
+.speed-bg.on{opacity:.55}
+.speed-bg i{position:absolute;top:-10%;bottom:-10%;width:2px;background:linear-gradient(180deg,transparent,rgba(var(--a),.9),transparent);transform:rotate(24deg)}
+@keyframes speedScroll{from{transform:translate(0,0)}to{transform:translate(0,-120vh)}}
+.speed-bg.on i{animation:speedScroll .9s linear infinite}
+
+/* ===== 15. Шифт оттенка при ховере (фото/карточки) ===== */
+.hue-shift{transition:filter .35s ease}
+.hue-shift:hover{filter:saturate(1.3) hue-rotate(-8deg) brightness(1.05)}
+
+/* ===== 20. Неон-тень у карточек при ховере ===== */
+.neon-card{transition:box-shadow .3s ease,transform .3s ease}
+.neon-card:hover{box-shadow:0 0 0 1px rgba(var(--a),.5),0 12px 40px rgba(var(--a),.4),0 0 40px rgba(var(--a),.28);transform:translateY(-4px)}
+
+/* ===== 26. Кнопка «наверх» ===== */
+.to-top{
+  position:fixed;right:22px;bottom:22px;z-index:70;width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(var(--nav-rgb),.7);border:1px solid rgba(var(--a),.5);color:var(--red-2);
+  cursor:pointer;opacity:0;visibility:hidden;transform:translateY(12px);transition:.3s;font-size:1.3rem;
+  box-shadow:0 8px 20px rgba(var(--a),.3);
+}
+.to-top.show{opacity:1;visibility:visible;transform:none}
+.to-top:hover{background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;border-color:transparent}
+
+/* ===== 28. Индикатор онлайн/оффлайн ===== */
+.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.8);animation:livePulse 1.6s ease-in-out infinite}
+.live-dot.off{background:#ef4444;box-shadow:none;animation:none}
+@keyframes livePulse{50%{opacity:.4}}
+
+/* ===== 9. Эквалайзер в логотипе ===== */
+.logo-eq{display:inline-flex;gap:2px;align-items:flex-end;height:14px;margin-left:6px;vertical-align:middle}
+.logo-eq i{display:block;width:3px;background:linear-gradient(180deg,var(--red-2),var(--red));border-radius:2px;animation:eqBounce 1s ease-in-out infinite}
+.logo-eq i:nth-child(1){animation-delay:0s}.logo-eq i:nth-child(2){animation-delay:.15s}.logo-eq i:nth-child(3){animation-delay:.3s}
+@keyframes eqBounce{0%,100%{height:4px}50%{height:14px}}
+
+/* ===== 10. Димирование/размытие под модалом ===== */
+.modal-dim{position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .3s;pointer-events:none}
+.modal-dim.show{opacity:1;pointer-events:auto}
+
+/* ===== 11. Скелетон-загрузка ===== */
+.skeleton{position:relative;overflow:hidden;background:rgba(var(--a),.08)}
+.skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:skelShine 1.4s ease infinite}
+@keyframes skelShine{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+
+/* ===== 22. Авто-тема по времени (приглушение) ===== */
+@media (prefers-color-scheme: light){ html[data-theme="auto"]{--bg:#f4f4f6;} }
+html[data-theme="auto"]{--auto-hint:attr(data-theme)}
+
+/* ===== 2. Spotlight-hover ===== */
+.spot{position:absolute;inset:0;pointer-events:none;z-index:0;transition:background .15s ease}
+.spot ~ *{position:relative;z-index:1}
+
+/* ===== 5. Магнит кнопок ===== */
+[data-magnet]{transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .25s ease}
+
+/* ===== 15. Блик на логотипе ===== */
+.logo-shine{position:relative;overflow:hidden}
+.logo-shine::after{content:"";position:absolute;top:0;bottom:0;left:-120%;width:55%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .5s ease}
+.logo-shine:hover::after{left:calc(var(--shine-x,50%) + 20%)}
+
+/* ===== 19. Глитч-заголовок ===== */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;opacity:.8;pointer-events:none}
+.glitch::before{color:var(--red-2);clip-path:inset(20% 0 55% 0);animation:gl1 3s infinite linear alternate-reverse}
+.glitch::after{color:#3b82f6;clip-path:inset(60% 0 15% 0);animation:gl2 2.2s infinite linear alternate-reverse}
+@keyframes gl1{0%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}100%{transform:translate(1px,0)}}
+@keyframes gl2{0%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}100%{transform:translate(-1px,0)}}
+
+/* ===== 25. Наклон карточек (data-tilt3d) ===== */
+[data-tilt3d]{transition:transform .2s ease,box-shadow .3s ease}
+[data-tilt3d]:hover{box-shadow:0 24px 60px rgba(var(--a),.22)}
+
+/* ===== 27. Зум-панель ===== */
+.zoom-panel{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);z-index:95;
+  background:var(--card);border:1px solid rgba(var(--a),.4);border-radius:var(--radius);
+  padding:34px 40px;max-width:82vw;text-align:center;opacity:0;visibility:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);transition:.3s;
+}
+.zoom-panel.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+
+/* ===== 24. Виньетка по краям экрана ===== */
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 58%,rgba(0,0,0,.32) 100%)}
+
+/* ===== 29. Плавный fade акцента при смене темы ===== */
+html.trans-accent *{transition:background-color .4s ease,color .4s ease,border-color .4s ease,box-shadow .4s ease}
+
+/* ===== 31. Спидометр скролла ===== */
+.speedo{position:relative}
+.speedo-bar{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--red),var(--red-2),#ffd94a);transition:width .1s linear;box-shadow:0 0 10px rgba(var(--a),.6)}
+.speedo-num{position:absolute;right:0;top:-22px;font-size:.85rem;font-weight:800;color:var(--red-2);font-variant-numeric:tabular-nums}
+
+/* ===== 16. Размытие при переходе секций ===== */
+.sec-blur{position:relative}
+.sec-blur::after{content:"";position:absolute;left:0;right:0;bottom:-40px;height:80px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:none;mask-image:linear-gradient(180deg,transparent,#000,transparent)}
+
+/* ===== 22. Полосы-заголовки: заполняются при скролле ===== */
+.bar-title{position:relative;display:inline-block;padding-bottom:10px}
+.bar-title::after{content:"";position:absolute;left:0;bottom:0;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--red),var(--red-2));width:var(--bar,0%);transition:width .1s linear;box-shadow:0 0 8px rgba(var(--a),.6)}
+
+/* ===== 38. Scroll-snap по секциям (index) ===== */
+.snap-wrap{scroll-snap-type:y proximity}
+.snap-wrap > section{scroll-snap-align:start;scroll-margin-top:64px}

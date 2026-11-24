@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube — KillanderRRY</title>
+<meta name="description" content="YouTube-раздел KillanderRRY. В разработке.">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--a:225,29,46;--a2:255,46,63;--nav-rgb:10,10,12;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+  .top{background:var(--bg-2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:18px}
+  .back-arrow{text-decoration:none;color:var(--muted);font-size:1.6rem;font-weight:800;line-height:1;transition:.2s}
+  .back-arrow:hover{color:var(--red-2);transform:translateX(-3px)}
+  .yt-logo{display:flex;align-items:center;gap:10px}
+  .yt-ic{width:44px;height:30px;background:#ff0000;border-radius:8px;position:relative;flex-shrink:0}
+  .yt-ic::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-45%,-50%);border-left:11px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent}
+  .yt-word{font-weight:900;font-size:1.15rem;letter-spacing:-.5px}
+  .yt-word b{color:var(--red)}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+  .box{text-align:center;max-width:460px}
+  .box .img{font-size:4rem;margin-bottom:18px;filter:grayscale(.2)}
+  .box h1{font-size:1.9rem;font-weight:900;margin-bottom:10px}
+  .box p{color:var(--muted)}
+  .stamp{display:inline-block;margin-top:18px;padding:8px 18px;border-radius:999px;background:rgba(var(--a),.12);border:1px solid rgba(var(--a),.4);color:var(--tag-soft,#ffd9dd);font-weight:800;font-size:.82rem;letter-spacing:1px}
+</style>
+</head>
+<body>
+<script>
+  (function () {
+    try {
+      var th = localStorage.getItem('kr-theme') || 'dark';
+      var ac = localStorage.getItem('kr-accent') || 'red';
+      var root = document.documentElement;
+      root.setAttribute('data-theme', th);
+      root.setAttribute('data-accent', ac);
+    } catch (e) {}
+  })();
+</script>
+
+<div class="top">
+  <a class="back-arrow" href="index.html" aria-label="Вернуться на главную">←</a>
+  <div class="yt-logo"><span class="yt-ic"></span><span class="yt-word">You<b>Tube</b></span></div>
+</div>
+
+<main>
+  <div class="box">
+    <div class="img">🎬</div>
+    <h1>В разработке</h1>
+    <p>Раздел YouTube скоро появится. Заглядывай позже!</p>
+    <span class="stamp">Скоро</span>
+  </div>
+</main>
+<script src="site-vfx.js"></script>
+</body>
+</html>

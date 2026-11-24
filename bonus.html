@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Секретный бонус — KillanderRRY</title>
+<meta name="description" content="Секретная страница KillanderRRY. Ты её нашёл — наслаждайся.">
+<link rel="stylesheet" href="site-effects.css">
+<link rel="stylesheet" href="site-vfx.css">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--shadow:0 20px 50px rgba(0,0,0,.55);
+    --a:225,29,46;--a2:255,46,63;--nav-rgb:10,10,12;--tag-soft:#ffd9dd;
+  }
+  /* ---- Theme selectors ---- */
+  html[data-theme="light"]{
+    --bg:#f4f4f6;--bg-2:#eaeaee;--card:#ffffff;--card-2:#f2f2f5;
+    --text:#18181c;--muted:#5c5c68;--border:#d6d6de;
+    --nav-rgb:244,244,246;--shadow:0 20px 50px rgba(0,0,0,.12);
+  }
+  html[data-theme="red"]{
+    --bg:#110507;--bg-2:#1a0909;--card:#241010;--card-2:#2b1414;
+    --red:#ff3b45;--red-2:#ff5f6b;--text:#fff1f3;--muted:#c9a6aa;
+    --border:#4a2127;--nav-rgb:17,5,7;
+    --a:255,59,69;--a2:255,95,107;--tag-soft:#ffd9dd;
+  }
+  html[data-accent="purple"]{
+    --red:#a855f7;--red-2:#c084fc;--a:168,85,247;--a2:192,132,252;--tag-soft:#e5d5ff;
+  }
+  html[data-accent="blue"]{
+    --red:#3b82f6;--red-2:#60a5fa;--a:59,130,246;--a2:96,165,250;--tag-soft:#d3e3ff;
+  }
+  html[data-accent="yellow"]{
+    --red:#eab308;--red-2:#facc15;--a:234,179,8;--a2:250,204,21;--tag-soft:#fff2c2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(600px 400px at 15% 0%,rgba(var(--a),.14),transparent 60%),radial-gradient(700px 500px at 85% 100%,rgba(var(--a),.12),transparent 60%),radial-gradient(500px 340px at 50% 45%,rgba(var(--a),.08),transparent 65%);animation:bgDrift 20s ease-in-out infinite alternate}
+  @keyframes bgDrift{from{opacity:.6;background-position:0 0,100% 100%,50% 45%}to{opacity:1;background-position:8% 12%,90% 86%,55% 40%}}
+  /* ---- Aurora blobs ---- */
+  .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .aurora span{position:absolute;border-radius:50%;filter:blur(70px);opacity:.26;will-change:transform}
+  .aurora .b1{width:440px;height:440px;background:radial-gradient(circle,rgba(var(--a),.5),transparent 70%);top:-120px;left:8%;animation:drift1 26s ease-in-out infinite alternate}
+  .aurora .b2{width:380px;height:380px;background:radial-gradient(circle,rgba(var(--a),.5),transparent 70%);bottom:6%;right:6%;animation:drift2 32s ease-in-out infinite alternate}
+  .aurora .b3{width:300px;height:300px;background:radial-gradient(circle,rgba(var(--a2),.35),transparent 70%);top:38%;left:52%;animation:drift3 40s ease-in-out infinite alternate}
+  @keyframes drift1{from{transform:translate(0,0)}to{transform:translate(90px,-60px)}}
+  @keyframes drift2{from{transform:translate(0,0)}to{transform:translate(-100px,-70px)}}
+  @keyframes drift3{from{transform:translate(0,0)}to{transform:translate(70px,50px)}}
+  /* ---- Tilt ---- */
+  .tilt{transition:box-shadow .3s ease}
+  .tilt:hover{box-shadow:0 24px 60px rgba(var(--a),.18)}
+  .tilt{will-change:transform}
+  /* ---- Reveal ---- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in-view{opacity:1;transform:none}
+  main,header{position:relative;z-index:1}
+  a{color:inherit}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--red-2);outline-offset:3px;border-radius:4px}
+  ::selection{background:rgba(var(--a),.55);color:#fff}
+
+  /* ---- Custom cursor ---- */
+  body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .logo{cursor:none}
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%}
+  .cursor-dot{width:8px;height:8px;margin:-4px 0 0 -4px;background:var(--red-2);box-shadow:0 0 12px var(--red),0 0 24px rgba(var(--a),.6);will-change:transform}
+  .cursor-ring{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;border:1.5px solid rgba(var(--a2),.85);background:transparent;transition:transform .12s ease-out;will-change:transform}
+  .cursor-ring.is-hover{transform:scale(1.5);border-color:var(--red-2);box-shadow:0 0 12px rgba(var(--a),.8)}
+  @media (hover:none),(pointer:coarse){ .cursor-dot,.cursor-ring{display:none} }
+
+  /* ---- Global particles ---- */
+.global-particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+  /* ---- Scan-lines overlay ---- */
+  
+  /* ---- Scroll progress bar ---- */
+  
+  /* ---- Page loader ---- */
+  .loader{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .5s ease,visibility .5s ease}
+  .loader.hide{opacity:0;visibility:hidden}
+  .loader .flag{width:52px;height:34px;border-radius:4px;overflow:hidden;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/34px 34px;box-shadow:0 0 26px rgba(var(--a),.9);animation:pulse .9s ease-in-out infinite alternate}
+  .loader .pole{width:4px;height:58px;background:var(--muted);border-radius:2px;margin-left:6px}
+  .loader-wrap{display:flex;align-items:center}
+  @keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(1.12);opacity:1}}.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--red),var(--red-2));box-shadow:0 0 12px rgba(var(--a),.8)}.scanlines{position:fixed;inset:0;z-index:2;pointer-events:none;mix-blend-mode:overlay;background:repeating-linear-gradient(0deg,rgba(255,45,63,.12) 0 1px,transparent 1px 3px,rgba(225,29,46,.05) 3px 4px);opacity:.5}
+
+  .container{width:min(1080px,92%);margin:0 auto}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(var(--nav-rgb),.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;letter-spacing:.5px;text-decoration:none}
+  .logo span{color:var(--red)}
+  .nav-links{display:flex;gap:20px;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;transition:color .2s;position:relative;padding-bottom:3px}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--red-2));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  .nav-links a:hover{color:var(--text)}
+
+  .bonus-hero{position:relative;padding:90px 0 40px;text-align:center;overflow:hidden}
+  .bonus-hero::before{content:"";position:absolute;inset:auto -20% -60% -20%;height:70%;background:radial-gradient(ellipse at center,rgba(var(--a),.28),transparent 65%);filter:blur(20px);pointer-events:none}
+  .eyebrow{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:2px;color:var(--red-2);text-transform:uppercase;margin-bottom:14px}
+  .bonus-hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:900;letter-spacing:-1px;line-height:1.1}
+  .bonus-hero p{color:var(--muted);max-width:52ch;margin:16px auto 0}
+
+  .secret-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(var(--a),.12);border:1px solid rgba(var(--a),.4);color:var(--tag-soft);padding:7px 16px;border-radius:999px;font-size:.8rem;font-weight:700;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+
+  .bonus-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;padding:40px 0 30px}
+  .bonus-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;position:relative;overflow:hidden}
+  .bonus-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent);opacity:.7}
+  .bonus-card .icon{font-size:2.2rem;margin-bottom:14px}
+  .bonus-card h3{font-size:1.15rem;font-weight:800;margin-bottom:8px}
+  .bonus-card p{color:var(--muted);font-size:.95rem}
+
+  /* ---- Speed meter visual ---- */
+  .meter{position:relative;text-align:center;padding:40px 0 20px}
+  .meter-num{font-size:5rem;font-weight:900;color:var(--red-2);text-shadow:0 0 30px rgba(var(--a2),.6);line-height:1}
+  .meter-num span{font-size:1.6rem;color:var(--muted)}
+  .meter-track{width:min(420px,90%);height:10px;margin:20px auto 0;border-radius:6px;background:var(--card-2);overflow:hidden;border:1px solid var(--border)}
+  .meter-fill{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--red-2));border-radius:6px;box-shadow:0 0 14px rgba(var(--a),.6);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+  .meter-labels{display:flex;justify-content:space-between;width:min(420px,90%);margin:8px auto 0;color:var(--muted);font-size:.75rem}
+
+  /* ---- Quote rotator ---- */
+  .quote-box{max-width:640px;margin:40px auto 0;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:34px;text-align:center;position:relative}
+  .quote-box .qmark{font-size:4rem;line-height:1;color:var(--red);text-shadow:0 0 30px rgba(var(--a),.6);font-family:Georgia,serif;opacity:.7}
+  .quote-box .qtext{font-size:1.3rem;font-weight:600;margin:12px 0;min-height:3.4em}
+  .quote-box .qauthor{color:var(--muted);font-size:.9rem}
+
+  .back-link{display:inline-flex;align-items:center;gap:8px;margin:40px auto 90px;padding:12px 26px;border-radius:12px;background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;font-weight:800;text-decoration:none;box-shadow:0 12px 30px rgba(var(--a),.4);transition:transform .2s}
+  .back-link:hover{transform:translateY(-3px)}
+
+  .sparkline{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--red-2);box-shadow:0 0 14px var(--red);animation:sparkFloat 7s ease-in-out infinite}
+  @keyframes sparkFloat{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-30px);opacity:1}}
+
+  /* ---- Drift mini-game ---- */
+  .game-section{position:relative;margin:44px auto 0;max-width:640px;text-align:center}
+  .game-title{font-size:.8rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--red-2);margin-bottom:6px}
+  .game-sub{color:var(--muted);font-size:.85rem;margin-bottom:20px}
+  .game-modebar{display:flex;justify-content:center;gap:10px;margin:0 auto 14px}
+  .game-mode-btn{border:1px solid var(--border);background:var(--card-2);color:var(--muted);padding:8px 22px;border-radius:999px;font-size:.85rem;font-weight:800;cursor:pointer;font-family:inherit;transition:background .2s,color .2s}
+  .game-mode-btn.on{background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;border-color:transparent}
+  .game-hud{display:flex;justify-content:space-between;align-items:center;max-width:480px;margin:0 auto 12px;gap:14px}
+  .game-hud .score{font-size:1.4rem;font-weight:900;color:var(--text)}
+  .game-hud .score b{color:var(--red-2)}
+  .game-hud .best{font-size:.8rem;color:var(--muted)}
+  .game-stage{position:relative;width:min(480px,94vw);height:min(640px,72vh);margin:0 auto;border-radius:18px;overflow:hidden;background:radial-gradient(circle at 50% 40%,#1a1416,#0a0a0c 70%);border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .game-stage canvas{display:block;width:100%;height:100%}
+  .game-message{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px}
+  .game-message .g-big{font-size:2.2rem;font-weight:900;letter-spacing:.5px}
+  .game-message .g-small{color:var(--muted);font-size:.9rem;max-width:40ch}
+  .game-message .g-big.neon{animation:neonFlash 1.6s ease-in-out infinite;text-shadow:0 0 8px var(--red-2),0 0 24px var(--red),0 0 48px var(--red)}
+  @keyframes neonFlash{0%,100%{text-shadow:0 0 8px var(--red-2),0 0 22px var(--red),0 0 44px var(--red);opacity:1}50%{text-shadow:0 0 2px var(--red),0 0 8px var(--red);opacity:.75}}
+  .game-start-btn{background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;border:none;padding:14px 34px;border-radius:14px;font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 10px 26px rgba(var(--a),.5);transition:transform .18s;font-family:inherit}
+  .game-start-btn:hover{transform:translateY(-2px)}
+  .game-ctrl{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:.78rem}
+  .game-ctrl kbd{background:var(--card-2);border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-family:inherit}
+
+  /* ---- Combos (drift burnout timer) ---- */
+  .combo-timer{max-width:480px;margin:0 auto 10px;height:8px;border-radius:6px;background:var(--card-2);overflow:hidden;border:1px solid var(--border)}
+  .combo-fill{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--red-2));border-radius:6px;box-shadow:0 0 12px rgba(var(--a),.6)}
+  .game-hud .combo{font-size:.85rem;font-weight:800;color:var(--red-2)}
+
+  /* ---- Garage (car select) ---- */
+  .garage{max-width:480px;margin:16px auto 0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+  .garage-title{font-size:.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center}
+  .garage-rows{display:flex;flex-direction:column;gap:10px}
+  .garage-row{display:flex;align-items:center;gap:12px}
+  .garage-chip{width:34px;height:34px;border-radius:9px;border:2px solid rgba(255,255,255,.18);flex-shrink:0;box-shadow:inset 0 0 10px rgba(0,0,0,.35)}
+  .garage-name{flex:1;text-align:left;font-weight:700;font-size:.9rem}
+  .garage-desc{flex:1;text-align:right;color:var(--muted);font-size:.72rem}
+  .garage-btn{border:1px solid var(--border);background:var(--card-2);color:var(--text);padding:6px 12px;border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .15s}
+  .garage-btn:hover{transform:translateY(-1px)}
+  .garage-btn.on{background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;border-color:transparent}
+
+  /* ---- Leaderboard ---- */
+  .board{max-width:480px;margin:16px auto 0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+  .board-title{font-size:.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center}
+  .board-list{display:flex;flex-direction:column;gap:6px}
+  .board-row{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:9px;background:var(--card-2);font-size:.85rem}
+  .board-row.me{border:1px solid var(--red-2);box-shadow:0 0 10px rgba(var(--a),.35)}
+  .board-rank{width:26px;text-align:center;font-weight:900;color:var(--red-2);flex-shrink:0}
+  .board-score{font-weight:800;flex-shrink:0}
+  .board-init{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;text-align:right}
+
+  @media (max-width:560px){
+    .nav-links{gap:12px;font-size:.8rem}
+    .meter-num{font-size:3.6rem}
+  }
+</style>
+</head>
+<body>
+<div class="loader" id="pageLoader"><div class="loader-wrap"><div class="flag"></div><div class="pole"></div></div></div>
+<div class="scroll-progress" id="scrollProg" aria-hidden="true"></div>
+<script>
+  (function () {
+    try {
+      var th = localStorage.getItem('kr-theme') || 'dark';
+      var ac = localStorage.getItem('kr-accent') || 'red';
+      var root = document.documentElement;
+      root.setAttribute('data-theme', th);
+      root.setAttribute('data-accent', ac);
+    } catch (e) {}
+  })();
+</script>
+<div class="aurora" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo">Killander<span>RRY</span><span class="logo-eq" aria-hidden="true"><i></i><i></i><i></i></span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="mods.html">Моды</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="download.html">Скачать</a></li>
+<li><a href="youtube.html">YouTube</a></li>
+        <li><a href="design.html">Дизайн</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="settings.html">Настройки</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="bonus-hero">
+    <div class="section-line" aria-hidden="true"></div>
+    <div class="container">
+      <div class="secret-tag">● Секретная страница</div>
+      <h1>Ты нашёл бонус</h1>
+      <p>Секретный уголок, спрятанный за трёхмерной буквой K. Здесь немного фактов, скорость и настроение.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="meter tilt reveal">
+        <span class="sparkline" style="left:18%;top:-20px"></span>
+        <span class="sparkline" style="left:70%;top:-40px;animation-delay:1s"></span>
+        <div class="meter-num" id="speedVal">0 <span>km/h</span></div>
+        <div class="meter-track"><div class="meter-fill" id="speedFill"></div></div>
+        <div class="meter-labels"><span>0</span><span>120</span><span>240</span><span>360</span></div>
+      </div>
+
+      <div class="bonus-grid">
+        <div class="bonus-card tilt reveal">
+          <div class="icon">🏁</div>
+          <h3>Скорость и дрифт</h3>
+          <p>Люблю переносить адреналин автобудней прямо в Minecraft. Блок за блоком — до идеала.</p>
+        </div>
+        <div class="bonus-card tilt reveal">
+          <div class="icon">⛏️</div>
+          <h3>Моды по-своему</h3>
+          <p>Делаю то, чего не хватало лично мне: честная механика и рабочий транспорт в игре.</p>
+        </div>
+        <div class="bonus-card tilt reveal">
+          <div class="icon">🎮</div>
+          <h3>В разработке</h3>
+          <p>Первый мод уже готовится. Следи за разделом «Скачать» — релиз не за горами.</p>
+        </div>
+      </div>
+
+      <div class="quote-box tilt reveal">
+        <span class="sparkline" style="left:12%;top:-24px"></span>
+        <span class="sparkline" style="right:12%;top:-16px;animation-delay:.7s"></span>
+        <div class="qmark">“</div>
+        <div class="qtext" id="qText">Здесь появятся цитаты.</div>
+        <div class="qauthor" id="qAuthor"></div>
+      </div>
+
+      <div class="game-section tilt reveal">
+        <div class="game-title">Drift Run · мини-игра</div>
+        <div class="game-sub">Уворачивайся от блоков, держи угол дрифта. Два режима: Дрифт (очки) и Трасса (на время)</div>
+        <div class="game-modebar">
+          <button class="game-mode-btn on" id="modeDrift" type="button">Дрифт</button>
+          <button class="game-mode-btn" id="modeRace" type="button">Трасса</button>
+        </div>
+        <div class="game-hud">
+          <div class="score">Очки <b id="gameScore">0</b></div>
+          <div class="combo" id="gameCombo"></div>
+          <div class="best" id="gameBestLabel">Рекорд <span id="gameBest">0</span></div>
+        </div>
+        <div class="combo-timer"><div class="combo-fill" id="comboFill"></div></div>
+        <div class="game-stage" id="gameStage">
+          <canvas id="gameCanvas"></canvas>
+          <div class="game-message" id="gameMessage">
+            <div class="g-big">DRIFT RUN</div>
+            <div class="g-small">Зажимай <kbd>←</kbd>/<kbd>→</kbd> или <kbd>A</kbd>/<kbd>D</kbd>, чтобы уворачиваться. Чем резче уход в сторону — тем больше очков за «стиль».</div>
+            <button class="game-start-btn" id="gameStart">Старт</button>
+          </div>
+        </div>
+        <div class="game-ctrl">
+          <span><kbd>←</kbd>/<kbd>A</kbd></span>
+          <span><kbd>→</kbd>/<kbd>D</kbd></span>
+          <span>Space — пауза</span>
+        </div>
+      </div>
+
+      <div class="garage tilt reveal">
+        <div class="garage-title">Гараж · выбери свою машину</div>
+        <div class="garage-rows" id="garageRows"></div>
+      </div>
+
+      <div class="board tilt reveal">
+        <div class="board-title">Топ рекордов · Дрифт</div>
+        <div class="board-list" id="boardList"></div>
+      </div>
+
+<div style="text-align:center">
+        <a class="back-link" href="engines.html" style="margin-right:10px">🔧 Мастерская движков</a>
+        <a class="back-link" href="belka.html" style="margin-right:10px">💾 Belka OS</a>
+        <a class="back-link" href="games.html" style="margin-right:10px">🎮 Мини-игры</a>
+        <a class="back-link" href="index.html">← Вернуться на главную</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  function accentRGB(){ const cs = getComputedStyle(document.documentElement); return (cs.getPropertyValue('--a') || '225,29,46').trim().split(/\s+/).join(','); }
+
+  if (finePointer) {
+    document.body.classList.add('has-cursor');
+    const dot = document.createElement('div'); dot.className = 'cursor-dot';
+    const ring = document.createElement('div'); ring.className = 'cursor-ring';
+    document.body.appendChild(dot); document.body.appendChild(ring);
+    let mx = -100, my = -100, rx = mx, ry = my;
+    window.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+      ring.classList.toggle('is-hover', !!e.target.closest('a,button,input,select,textarea,label'));
+    }, { passive: true });
+    (function ringLoop(){ rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16; ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)'; requestAnimationFrame(ringLoop); })();
+  }
+
+  if (!reduceMotion && (function(){ try { return (localStorage.getItem('kr-particles') || 'on') !== 'off'; } catch (e) { return true; } })()) {
+    const gpCv = document.createElement('canvas');
+    gpCv.className = 'global-particles';
+    document.body.appendChild(gpCv);
+    const gctx = gpCv.getContext('2d');
+    const gdpr = Math.min(devicePixelRatio || 1, 2);
+    let gparts;
+    const gResize = () => {
+      gpCv.width = innerWidth * gdpr; gpCv.height = innerHeight * gdpr;
+      const n = Math.min(50, Math.floor(innerWidth / 28));
+      gparts = Array.from({ length: n }, () => ({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 0.6+Math.random()*1.8, s: 0.08+Math.random()*0.35, alpha: 0.1+Math.random()*0.3, drift: Math.random()*Math.PI*2 }));
+    };
+    gResize(); window.addEventListener('resize', gResize);
+    let gt = 0;
+    (function gLoop(){
+      gt += 0.01;
+      gctx.setTransform(gdpr,0,0,gdpr,0,0); gctx.clearRect(0,0,innerWidth,innerHeight);
+      gparts.forEach((p) => {
+        p.y -= p.s; p.x += Math.sin(gt + p.drift) * 0.2;
+        if (p.y < -10) { p.y = innerHeight + 10; p.x = Math.random() * innerWidth; }
+        gctx.beginPath(); gctx.fillStyle = 'rgba(' + accentRGB() + ',' + p.alpha + ')'; gctx.arc(p.x, p.y, p.r, 0, Math.PI*2); gctx.fill();
+      });
+      requestAnimationFrame(gLoop);
+    })();
+  }
+
+  if (!reduceMotion) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.tilt').forEach((el) => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = 'perspective(700px) rotateY(' + (px * 8) + 'deg) rotateX(' + (-py * 8) + 'deg)';
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+  }
+
+  const meterNum = document.getElementById('speedVal');
+  const meterFill = document.getElementById('speedFill');
+  const target = 320;
+  if (meterNum) {
+    let v = 0;
+    const step = () => {
+      v += (target - v) * 0.06;
+      if (v > target - 0.5) { v = target; }
+      meterNum.childNodes[0].nodeValue = Math.round(v) + ' ';
+      meterFill.style.width = (v / 360 * 100) + '%';
+      if (v < target) requestAnimationFrame(step);
+    };
+    setTimeout(() => requestAnimationFrame(step), 600);
+  }
+
+  const quotes = [
+    ['Скорость — это свобода, просто ты чувствуешь её сильнее.', 'Кто-то мудрый'],
+    ['Дрифт — это когда машина танцует, а ты просто ведёшь.', 'KillanderRRY'],
+    ['Каждый блок важен, если строить правильно.', 'Неизвестно'],
+    ['Мод пишется долго, но манит без остановки.', 'KillanderRRY']
+  ];
+  const qText = document.getElementById('qText');
+  const qAuthor = document.getElementById('qAuthor');
+  if (qText && quotes.length) {
+    let qi = 0;
+    const show = () => { qText.textContent = quotes[qi][0]; if (qAuthor) qAuthor.textContent = '— ' + quotes[qi][1]; qi = (qi + 1) % quotes.length; };
+    show();
+    setInterval(show, 5000);
+  }
+
+  // ---- Drift run mini-game (Drift / Race + combos, garage, leaderboard) ----
+  (function () {
+    const canvas = document.getElementById('gameCanvas');
+    const stage = document.getElementById('gameStage');
+    const message = document.getElementById('gameMessage');
+    const startBtn = document.getElementById('gameStart');
+    const scoreEl = document.getElementById('gameScore');
+    const bestEl = document.getElementById('gameBest');
+    const bestLabel = document.getElementById('gameBestLabel');
+    const comboEl = document.getElementById('gameCombo');
+    const comboFill = document.getElementById('comboFill');
+    const modeDrift = document.getElementById('modeDrift');
+    const modeRace = document.getElementById('modeRace');
+    const boardList = document.getElementById('boardList');
+    const garageRows = document.getElementById('garageRows');
+    const keyboard = canvas ? canvas : window;
+    const ctx = canvas.getContext('2d');
+    const KEY_LEFT = 'ArrowLeft', KEY_RIGHT = 'ArrowRight', KEY_A = 'KeyA', KEY_D = 'KeyD', KEY_PAUSE = 'Space';
+    const keyDown = {};   // currently held keys
+    const BEST_KEY = 'kr-drift-best';
+    const RACE_KEY = 'kr-race-best';
+    const BOARD_KEY = 'kr-board';
+    const SKIN_KEY = 'kr-skin';
+    const NAME_KEY = 'kr-name';
+
+    // ---- Supabase (общий топ). Пока пусто -> фолбэк на localStorage.
+    // Вставь сюда URL проекта и anon-ключ, когда создашь таблицу scores(n, s)
+    const SB_URL = '';
+    const SB_KEY = '';
+    const SB_TABLE = 'scores';
+
+    const CARS = [
+      { id: 'classic', name: 'Классика', body: '#ffffff', stripe: '#e11d2e', glow: true },
+      { id: 'carbon', name: 'Карбон', body: '#3a3a40', stripe: '#ff2e3f', glow: true },
+      { id: 'neon', name: 'Неон', body: '#101018', stripe: '#00e5ff', glow: true },
+      { id: 'gold', name: 'Золото', body: '#f4d04a', stripe: '#8a6a14', glow: true },
+      { id: 'crimson', name: 'Багровый', body: '#7a0e16', stripe: '#ff5f6b', glow: false }
+    ];
+
+    let W, H, playing = false, paused = false, over = false;
+    let mode = 'drift';   // 'drift' | 'race'
+    let car = { x: 0, w: 46, h: 30, vy: 0 };
+    let score = 0, stylePoints = 0, styleFrames = 0, combo = 1, comboGauge = 0;
+    let best = 0, raceBest = 0;
+
+    function loadBest() {
+      try { best = parseInt(localStorage.getItem(BEST_KEY) || '0', 10) || 0; } catch (e) {}
+      try { raceBest = parseFloat(localStorage.getItem(RACE_KEY) || '0') || 0; } catch (e) {}
+    }
+    loadBest();
+    function displayBest() {
+      if (!bestEl) return;
+      bestEl.textContent = mode === 'race' ? raceBest.toFixed(1) : String(best);
+      if (bestLabel) bestLabel.childNodes[0].nodeValue = (mode === 'race' ? 'Рекорд времени ' : 'Рекорд ');
+    }
+    displayBest();
+
+    // ---- Garage ----
+    function getSkin() { try { const s = localStorage.getItem(SKIN_KEY); return CARS.find(c => c.id === s) || CARS[0]; } catch (e) { return CARS[0]; } }
+    function renderGarage() {
+      if (!garageRows) return;
+      const current = getSkin().id;
+      garageRows.innerHTML = CARS.map(c =>
+        '<div class="garage-row">' +
+          '<span class="garage-chip" style="background:linear-gradient(135deg,' + c.body + ',' + c.stripe + ')"></span>' +
+          '<span class="garage-name">' + c.name + '</span>' +
+          '<button type="button" class="garage-btn' + (c.id === current ? ' on' : '') + '" data-skin="' + c.id + '">' + (c.id === current ? 'Выбрано' : 'Выбрать') + '</button>' +
+        '</div>').join('');
+      garageRows.querySelectorAll('.garage-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          try { localStorage.setItem(SKIN_KEY, btn.dataset.skin); } catch (e) {}
+          renderGarage();
+        });
+      });
+    }
+    renderGarage();
+
+    // ---- Leaderboard (общий топ через Supabase, иначе localStorage) ----
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+    function sbOn() { return !!SB_URL && !!SB_KEY; }
+    function loadBoard() { try { return JSON.parse(localStorage.getItem(BOARD_KEY)) || []; } catch (e) { return []; } }
+    function renderBoard(arr) {
+      if (!boardList) return;
+      if (!arr.length) { boardList.innerHTML = '<div class="board-row"><span class="board-rank">—</span><span>Пока пусто. Сыграй в режиме Дрифт!</span></div>'; return; }
+      boardList.innerHTML = arr.map((r, i) =>
+        '<div class="board-row">' +
+          '<span class="board-rank">' + (i + 1) + '</span>' +
+          '<span class="board-score">' + Math.round(r.s) + '</span>' +
+          '<span class="board-init">' + escapeHtml(r.n) + '</span>' +
+        '</div>').join('');
+    }
+    function playerName() {
+      try {
+        let n = localStorage.getItem(NAME_KEY);
+        if (!n) { n = prompt('Твой ник для таблицы рекордов:') || 'Ты'; localStorage.setItem(NAME_KEY, n); }
+        return n;
+      } catch (e) { return 'Ты'; }
+    }
+    function fetchBoard() {
+      if (sbOn()) {
+        fetch(SB_URL + '/rest/v1/' + SB_TABLE + '?select=n,s&order=s.desc&limit=10', {
+          headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+        })
+          .then(r => r.ok ? r.json() : Promise.reject(r.status))
+          .then(rows => { renderBoard(rows.map(x => ({ n: x.n || '?', s: x.s }))); })
+          .catch(() => renderBoard(loadBoard()));
+      } else {
+        renderBoard(loadBoard());
+      }
+    }
+    function postScore(n, s) {
+      if (!sbOn()) return;
+      fetch(SB_URL + '/rest/v1/' + SB_TABLE, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ n: n, s: Math.round(s) })
+      }).catch(() => {});
+      // optimistic: refresh right away
+      setTimeout(fetchBoard, 400);
+    }
+    function addToBoard(score) {
+      const name = playerName();
+      const arr = loadBoard();
+      arr.push({ n: name, s: Math.round(score), t: Date.now() });
+      arr.sort((a, b) => b.s - a.s);
+      if (arr.length > 10) arr.length = 10;
+      try { localStorage.setItem(BOARD_KEY, JSON.stringify(arr)); } catch (e) {}
+      postScore(name, score);
+      fetchBoard();
+    }
+    fetchBoard();
+
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    function resize() {
+      const r = stage.getBoundingClientRect();
+      W = r.width; H = r.height;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      car.x = W / 2 - car.w / 2;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function showMsg(show, big, small) {
+      if (!message) return;
+      message.style.visibility = show ? 'visible' : 'hidden';
+      if (show) {
+        message.querySelector('.g-big').textContent = big;
+        message.querySelector('.g-small').textContent = small;
+      }
+    }
+
+    let hintByMode = {
+      drift: 'Зажимай ' + '<kbd>←</kbd>/<kbd>→</kbd> или ' + '<kbd>A</kbd>/<kbd>D</kbd>, чтобы уворачиваться. Держи дрифт — копи жетон до x5!',
+      race: 'Продержись как можно дольше! Уворачивайся от блоков и набирай время.'
+    };
+    // message shows as string with <kbd> — assign via innerHTML only when shown (our button is outside)
+    if (message) message.style.visibility = 'visible';
+
+    function reset() {
+      score = 0; stylePoints = 0; styleFrames = 0; combo = 1; comboGauge = 0;
+      over = false; paused = false;
+      car.x = W / 2 - car.w / 2; car.vy = 0;
+      blocks.length = 0;
+      spawnTimer = 0; curveTimer = 0; speed = 4.2;
+      if (scoreEl) scoreEl.textContent = mode === 'race' ? '0.0' : '0';
+      if (comboEl) comboEl.textContent = '';
+      if (comboFill) comboFill.style.width = '0%';
+    }
+
+    // Road blocks falling from top
+    let blocks = [];
+    let spawnTimer = 0, curveTimer = 0, speed = 4.2;
+    const SPAWN = 110;
+    function spawnBlock() {
+      const w = 36 + Math.random() * 26;
+      const x = Math.random() * (W - w);
+      blocks.push({ x: x, y: -50, w: w, h: 34 + Math.random() * 26, vx: (Math.random() - 0.5) * 0.4 });
+    }
+
+    function gameOver() {
+      over = true;
+      if (mode === 'drift') {
+        addToBoard(score);
+        const newRecord = score > best;
+        if (newRecord) { best = score; try { localStorage.setItem(BEST_KEY, String(best)); } catch (e) {} }
+        displayBest();
+        showMsg(true, 'DRIFT OVER', 'Очки: ' + Math.round(score) + (newRecord ? ' — новый рекорд!' : ''));
+        if (newRecord) {
+          const big = message ? message.querySelector('.g-big') : null;
+          if (big) big.classList.add('neon');
+        }
+      } else {
+        const newRecord = score > raceBest;
+        if (newRecord) { raceBest = score; try { localStorage.setItem(RACE_KEY, String(raceBest)); } catch (e) {} }
+        displayBest();
+        showMsg(true, 'RACE OVER', 'Время: ' + score.toFixed(1) + ' с' + (newRecord ? ' — новый рекорд!' : ''));
+        if (newRecord) {
+          const big = message ? message.querySelector('.g-big') : null;
+          if (big) big.classList.add('neon');
+        }
+      }
+    }
+
+    let lastT = null;
+    function loop(ts) {
+      if (!playing) return;
+      if (lastT == null) lastT = ts;
+      const dt = Math.min(0.05, (ts - lastT) / 1000 || 0.016);
+      lastT = ts;
+      if (!paused && !over) update(dt);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function update(dt) {
+      // steering: smooth velocity toward held direction (small drift feel)
+      let dir = 0;
+      if (keyDown[KEY_LEFT] || keyDown[KEY_A]) dir = -1;
+      if (keyDown[KEY_RIGHT] || keyDown[KEY_D]) dir = 1;
+      const speedFactor = dir !== 0 ? 4.6 : 3.4;
+      car.vy += (dir * speedFactor - car.vy) * 0.12;
+      car.x += car.vy;
+      if (speed > 2.6) { car.x += (Math.sin(curveTimer / 60) * 0.8) * 0.5; }  // road weaving
+      car.x = Math.max(8, Math.min(W - car.w - 8, car.x));
+
+      if (mode === 'drift') {
+        // combo: drifting builds the multiplier x1..x5, decays when steering straight
+        if (dir !== 0 && Math.abs(car.vy) > 1.2) { styleFrames++; comboGauge = Math.min(100, comboGauge + 1.2); }
+        else { styleFrames = 0; comboGauge = Math.max(0, comboGauge - 1.6); }
+        combo = 1 + Math.floor(comboGauge / 25);
+        if (comboEl) comboEl.textContent = combo > 1 ? 'x' + combo : '';
+        if (comboFill) comboFill.style.width = comboGauge + '%';
+        score += (1 + Math.floor(stylePoints / 6)) * combo;
+        if (styleFrames > 40) score += 5;       // clean sustained drift bonus
+        if (scoreEl) scoreEl.textContent = Math.round(score);
+        speed = Math.min(8, 4.2 + score / 900);
+      } else {
+        // race: survival time, gentle ramp
+        score += dt;
+        speed = Math.min(8.5, 3.6 + score * 0.35);
+        if (scoreEl) scoreEl.textContent = score.toFixed(1);
+      }
+
+      // spawn blocks
+      spawnTimer += speed;
+      if (spawnTimer > SPAWN) { spawnTimer = 0; spawnBlock(); }
+      curveTimer++;
+
+      // move blocks
+      for (let i = blocks.length - 1; i >= 0; i--) {
+        const b = blocks[i];
+        b.y += speed;
+        b.x += b.vx;
+        if (b.y > H + 60) { blocks.splice(i, 1); if (mode === 'drift') score += 3; continue; }
+
+        // collision with car
+        const cx = car.x, cy = H - 44;
+        if (b.x < cx + car.w && b.x + b.w > cx && b.y < cy + car.h && b.y + b.h > cy) {
+          gameOver();
+          return;
+        }
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      const accent = accentRGB();
+      const skin = getSkin();
+
+      // dashed center line moving (road feel)
+      ctx.strokeStyle = 'rgba(' + accent + ',0.35)';
+      ctx.lineWidth = 3; ctx.setLineDash([18, 22]);
+      const dashOff = (curveTimer * 0.5) % 40;
+      ctx.beginPath();
+      ctx.moveTo(W / 2, -40 + dashOff); ctx.lineTo(W / 2, H);
+      ctx.stroke();
+
+      // blocks
+      blocks.forEach((b) => {
+        ctx.fillStyle = '#e11d2e';
+        ctx.shadowColor = 'rgba(' + accent + ',0.5)';
+        ctx.shadowBlur = 14;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(255,255,255,0.14)';
+        ctx.fillRect(b.x + 3, b.y + 3, b.w - 6, b.h / 2 - 3);
+      });
+
+      // car (skin colors)
+      const cy = H - 44;
+      ctx.save();
+      ctx.translate(car.x + car.w / 2, cy + car.h / 2);
+      const tilt = Math.max(-1, Math.min(1, car.vy)) * 0.25;
+      ctx.rotate(tilt);
+      ctx.fillStyle = skin.body;
+      if (skin.glow) { ctx.shadowColor = 'rgba(' + accent + ',0.7)'; ctx.shadowBlur = 18; }
+      ctx.fillRect(-car.w / 2, -car.h / 2, car.w, car.h);
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = skin.stripe;
+      ctx.fillRect(-car.w / 2 + 5, -car.h / 2 + 5, car.w - 10, 7);       // stripe
+      ctx.fillRect(-car.w / 2 + 5, car.h / 2 - 8, car.w - 10, 3);        // underbody
+      ctx.restore();
+
+      // speed lines at high speed
+      if (speed > 5) {
+        ctx.strokeStyle = 'rgba(' + accent + ',0.18)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 4; i++) {
+          const ly = ((curveTimer * speed - i * 90) % (H + 40)) - 20;
+          ctx.beginPath(); ctx.moveTo(W * 0.16, ly); ctx.lineTo(W * 0.16, ly - 24 - speed); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(W * 0.84, ly); ctx.lineTo(W * 0.84, ly - 24 - speed); ctx.stroke();
+        }
+      }
+    }
+
+    function setMode(m) {
+      mode = m;
+      if (modeDrift) modeDrift.classList.toggle('on', m === 'drift');
+      if (modeRace) modeRace.classList.toggle('on', m === 'race');
+      displayBest();
+      reset();
+      if (!playing) showMsg(true, m === 'drift' ? 'DRIFT RUN' : 'RACE', m === 'drift' ? 'Держи дрифт, копи комбо до x5 и набирай очки!' : 'Продержись как можно дольше!');
+    }
+    if (modeDrift) modeDrift.addEventListener('click', () => setMode('drift'));
+    if (modeRace) modeRace.addEventListener('click', () => setMode('race'));
+
+    startBtn.addEventListener('click', () => {
+      reset();
+      playing = true; over = false; lastT = null;
+      const big = message ? message.querySelector('.g-big') : null;
+      if (big) big.classList.remove('neon');
+      showMsg(false);
+      requestAnimationFrame(loop);
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (!playing) return;
+      if (e.code === KEY_LEFT || e.code === KEY_RIGHT || e.code === KEY_A || e.code === KEY_D) e.preventDefault();
+      if (e.code === KEY_PAUSE) {
+        e.preventDefault();
+        if (!over) { paused = !paused; if (paused) showMsg(true, 'ПАУЗА', 'Нажми ещё раз — продолжить'); else showMsg(false); }
+        return;
+      }
+      keyDown[e.code] = true;
+    });
+    window.addEventListener('keyup', (e) => { keyDown[e.code] = false; });
+
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); }, { passive: false });
+  })();
+</script>
+
+<script>
+(function(){var el=document.getElementById('scrollProg');if(!el)return;function upd(){var h=document.documentElement;var s=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight||1);el.style.width=Math.min(100,Math.max(0,s*100))+'%';}window.addEventListener('scroll',upd,{passive:true});upd();})();
+</script>
+<script>
+(function(){var l=document.getElementById('pageLoader');if(!l)return;window.addEventListener('load',function(){setTimeout(function(){l.classList.add('hide');setTimeout(function(){l.remove();},500);},250);});setTimeout(function(){l.classList.add('hide');setTimeout(function(){l.remove();},500);},3500);})();
+</script><script src="site-effects.js"></script>
+<script src="site-vfx.js"></script>
+</body>
+</html>

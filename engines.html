@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light" data-accent="red">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мастерская движков — KillanderRRY</title>
+<meta name="description" content="Секретная мастерская: собери и продай движки, прокачай до максимума.">
+<link rel="stylesheet" href="site-effects.css">
+<link rel="stylesheet" href="site-vfx.css">
+<style>
+  :root{
+    --bg:#ffffff;--bg-2:#f2f2f5;--card:#ffffff;--card-2:#eef0f4;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#1a1a20;--muted:#66667a;--border:#d6d6de;
+    --black:#0f0f13;--radius:16px;--shadow:0 16px 44px rgba(0,0,0,.10);
+    --a:225,29,46;--a2:255,46,63;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;cursor:auto}
+  /* ---- wrench cursor ---- */
+  body, a, button, input, select, textarea, label{cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><circle cx="14" cy="14" r="2" fill="%23e11d2e"/><g transform="rotate(-35 14 14)" fill="none" stroke="%23e11d2e" stroke-width="3" stroke-linecap="round"><path d="M14 4 v6 M14 18 v6 M4 14 h6 M18 14 h6"/></g></svg>') 14 14, crosshair}
+  ::selection{background:rgba(var(--a),.4);color:#fff}
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--red-2);outline-offset:2px}
+  /* ---- fireflies ---- */
+  .embers{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .ember{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(var(--a2),.9),rgba(var(--a),.5) 55%,transparent 75%);filter:blur(1px);opacity:.85;animation:float linear infinite}
+  @keyframes float{
+    0%{transform:translate(0,0) scale(1);opacity:0}
+    12%{opacity:.9}
+    88%{opacity:.7}
+    100%{transform:translate(var(--dx),var(--dy)) scale(1.4);opacity:0}
+  }
+  /* ---- drifting smoke / gradient wash ---- */
+  .smoke{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .smoke span{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(var(--a),var(--so)),transparent 70%);filter:blur(34px);animation:smokeDrift var(--sd) ease-in-out infinite alternate;will-change:transform}
+  @keyframes smokeDrift{
+    from{transform:translate(0,0) scale(1)}
+    to{transform:translate(var(--sdx),var(--sdy)) scale(var(--ss))}
+  }
+main{position:relative;z-index:1}
+  /* ---- Scan-lines overlay ---- */
+  
+  /* ---- Scroll progress bar ---- */
+  
+  /* ---- Page loader ---- */
+  .loader{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .5s ease,visibility .5s ease}
+  .loader.hide{opacity:0;visibility:hidden}
+  .loader .flag{width:52px;height:34px;border-radius:4px;overflow:hidden;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/34px 34px;box-shadow:0 0 26px rgba(var(--a),.9);animation:pulse .9s ease-in-out infinite alternate}
+  .loader .pole{width:4px;height:58px;background:var(--muted);border-radius:2px;margin-left:6px}
+  .loader-wrap{display:flex;align-items:center}
+  @keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(1.12);opacity:1}}.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--red),var(--red-2));box-shadow:0 0 12px rgba(var(--a),.8)}.scanlines{position:fixed;inset:0;z-index:3;pointer-events:none;mix-blend-mode:multiply;background:repeating-linear-gradient(0deg,rgba(225,29,46,.05) 0 1px,transparent 1px 3px);opacity:.35}
+  /* ---- Speed-lines flash on sell ---- */
+  .speedflash{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:0;background:repeating-linear-gradient(90deg,rgba(225,29,46,0) 0 30px,rgba(225,29,46,.5) 30px 38px,rgba(225,29,46,0) 38px 90px);mix-blend-mode:screen}
+  .speedflash.go{animation:speedge 0.5s ease-out 1 forwards}
+  @keyframes speedge{0%{opacity:0;transform:translateX(0)}25%{opacity:1}100%{opacity:0;transform:translateX(-40px)}}
+  .container{width:min(1000px,94%);margin:0 auto}
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1000px;margin:0 auto;padding:0 3%}
+.logo{font-weight:900;letter-spacing:.5px;text-decoration:none;color:var(--text)}
+  .logo span{color:var(--red)}
+  .eng-nav{display:flex;gap:16px;align-items:center}
+  .eng-nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:.9rem;transition:color .2s}
+  .eng-nav a:hover{color:var(--text)}
+  .hero{text-align:center;padding:60px 0 30px}
+  .tag{display:inline-block;background:rgba(var(--a),.12);color:var(--red);border:1px solid rgba(var(--a),.35);padding:6px 16px;border-radius:999px;font-size:.75rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .hero h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:900;letter-spacing:-1px;line-height:1.1}
+  .hero h1 span{color:var(--red)}
+  .hero p{color:var(--muted);max-width:56ch;margin:14px auto 0}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin:20px 0}
+  .panel h2{font-size:1.2rem;font-weight:900;margin-bottom:4px}
+  .panel .sub{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+  .wallet{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+  .wallet .money{font-size:1.8rem;font-weight:900;color:var(--red)}
+  .wallet .money small{font-size:.85rem;color:var(--muted);font-weight:600}
+  .badge{font-size:.78rem;font-weight:800;background:var(--black);color:#fff;padding:6px 12px;border-radius:999px}
+  .engines{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:8px}
+  .engine{background:var(--card-2);border:2px solid var(--border);border-radius:14px;padding:16px;text-align:left;transition:transform .18s,border-color .18s}
+  .engine:hover{transform:translateY(-3px)}
+  .engine.sel{border-color:var(--red);background:rgba(var(--a),.06)}
+  .engine h3{font-weight:900;font-size:1.05rem;color:var(--text)}
+  .engine .desc{font-size:.78rem;color:var(--muted);margin:6px 0 10px;min-height:2.4em}
+  .engine .pay{font-weight:800;color:var(--red)}
+  .engine .pay small{color:var(--muted);font-weight:600}
+  .req{font-size:.72rem;color:var(--muted);margin-top:6px}
+  .req b{color:var(--text)}
+  select,.seg,.btn,.eng-sell button{border:1px solid var(--border)}
+  .wire{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:6px}
+  .tunes{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+  .tune{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+  .tune .t-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .tune .t-name{font-weight:800;font-size:.92rem}
+  .tune .t-state{font-size:.72rem;color:var(--muted)}
+  .tune .t-state.on{color:var(--red);font-weight:800}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:5px 11px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s,color .15s}
+  .seg button:hover{color:var(--text)}
+  .seg button.on{background:var(--black);color:#fff;border-color:var(--black)}
+  .seg button.reqonly{background:rgba(var(--a),.08);color:var(--red)}
+  .seg button.reqonly.on{background:var(--red);color:#fff;border-color:var(--red)}
+  .sliders{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .slider label{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;margin-bottom:4px}
+  .slider label span{color:var(--red)}
+  .slider input[type=range]{width:100%;accent-color:var(--red)}
+  .slider .note{font-size:.7rem;color:var(--muted);margin-top:2px}
+  .eng-sell{text-align:center;margin-top:18px}
+  .eng-sell button{background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;border:none;padding:14px 36px;border-radius:14px;font-size:1.05rem;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 10px 26px rgba(var(--a),.4);transition:transform .18s}
+  .eng-sell button:hover{transform:translateY(-2px)}
+  .eng-sell button:disabled{opacity:.45;cursor:not-allowed}
+  .log{margin-top:14px;text-align:center;color:var(--muted);font-size:.85rem;min-height:1.5em}
+  .eng-viz{position:relative;width:min(520px,100%);height:260px;margin:14px auto 0;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#f7f8fb,#eef0f4);border:1px solid var(--border)}
+  .eng-viz canvas{display:block;width:100%;height:100%}
+  .spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0}
+  .spec .s{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+  .spec .s .lbl{font-size:.66rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .spec .s .val{font-size:1.2rem;font-weight:900;color:var(--text)}
+  .hidden{display:none}
+  .reset-wrap{text-align:center;margin:40px 0 60px}
+.reset-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px 26px;border-radius:12px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit}
+  .reset-btn:disabled{opacity:.5}
+  .reset-btn:hover{border-color:var(--red);color:var(--text)}
+  .back-secret{display:inline-block;margin-top:6px;color:var(--red-2);text-decoration:none;font-weight:700;font-size:.95rem}
+  .back-secret:hover{text-decoration:underline}
+  @media (max-width:560px){
+    .engines{grid-template-columns:1fr}
+    .wire{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="loader" id="pageLoader"><div class="loader-wrap"><div class="flag"></div><div class="pole"></div></div></div>
+<div class="scroll-progress" id="scrollProg" aria-hidden="true"></div>
+<div class="embers" id="embers"></div>
+<div class="smoke" id="smoke"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<header>
+  <nav>
+    <a href="bonus.html" class="logo">Killander<span>RRY</span> · Мастерская</a>
+    <div class="eng-nav">
+      <a href="index.html">Главная</a>
+      <a href="youtube.html">YouTube</a>
+      <a href="design.html">Дизайн</a>
+      <a href="news.html">Новости</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="container">
+    <div class="hero">
+      <div class="tag">Только через секретную страницу</div>
+      <h1>Собери движок.<br><span>Прокачай до предела.</span></h1>
+      <p>Кликер-мастерская: собирай двигатели по заказам, тюнгуй каждую деталь и продавай с прибылью. Выбирай пути — турбо или нагнетатель, дросселя или карбюратор.</p>
+    </div>
+
+    <div class="panel wallet">
+      <div>
+        <div class="money" id="money">$<span id="moneyV">0</span></div>
+        <div class="badge" id="builtB">Собрано: 0</div>
+      </div>
+      <div class="badge" id="bestB">Топ-движок: —</div>
+    </div>
+
+    <div class="panel">
+      <h2>Выбери движок</h2>
+      <div class="sub">Начни с заметного заказа и покупай доступ к более мощным</div>
+      <div class="engines" id="engines"></div>
+    </div>
+
+    <div class="panel hidden" id="garagePanel">
+      <h2 id="activeEngineName">Двигатель</h2>
+<div class="sub" id="activeEngineDesc"></div>
+      <div class="eng-viz"><canvas id="engCanvas"></canvas></div>
+      <div class="spec" id="specBox"></div>
+
+      <div id="chargeBox" class="hidden">
+        <div class="sub">Впуск с дросселями несовместим с турбо и нагнетателем — выбери, как нагнетать воздух</div>
+        <div class="seg" id="chargeSeg"></div>
+      </div>
+
+      <h2 style="margin-top:14px">Тюнинг</h2>
+      <div class="tunes" id="tunes"></div>
+
+      <div class="hidden" id="ecuPanel">
+        <h2 style="margin-top:14px">Настройка ЭБУ</h2>
+        <div class="sub">Топливная смесь и наддув влияют на мощность, но рискнёшь надёжностью</div>
+        <div class="sliders" id="ecuSliders"></div>
+      </div>
+
+      <div class="eng-sell">
+        <button id="sellBtn" disabled>Продать движок</button>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+
+<div class="reset-wrap">
+      <button class="reset-btn" id="resetBtn">Сбросить прогресс</button>
+    </div>
+
+    <div style="text-align:center;padding:20px 0 60px">
+      <a class="back-secret" href="bonus.html">← Вернуться на секретную страницу</a>
+    </div>
+  </div>
+</main>
+
+<script>
+// ---- data ----
+const ENGINES = [
+  { id:'sr', name:'SR20DETT', desc:'Компактный японский турбомотор. Подойдёт для дрифта. Рядный, 4 поршня.', pay:45, req:0, boost:'turbo', carb:false },
+  { id:'1jz', name:'1JZ-GTE', desc:'Старший брат легендарного мотора 2JZ-GTE. Рядный, 6 поршней.', pay:55, req:2, boost:'turbo', carb:false },
+  { id:'2jz', name:'2JZ-GTE', desc:'Легенда. Прочный японский мотор. Огромный потенциал под драг. Чаще всего используется в дрифте. Рядный, 6 поршней.', pay:70, req:3, boost:'turbo', carb:false },
+  { id:'uz', name:'1UZ-FE', desc:'Премиум V8 в то время. В наше время используется для драга. V-образный, 8 поршней.', pay:90, req:5, boost:'choose', carb:false },
+  { id:'v8o', name:'Старый V8 5.5L', desc:'Старая классика с карбюратором. Один из самых популярных двигателей для драга. V-образный, 8 поршней.', pay:120, req:8, boost:'choose', carb:true },
+  { id:'hemi', name:'V8 HEMI Supercharger', desc:'Двигатель популярного Dodge Challenger SRT. В стоке 707 лс. Популярный нагнетатель, который издаёт тот самый стон. V-образный, 8 поршней.', pay:160, req:14, boost:'choose', carb:false }
+];
+const V8_CHOOSE = ['uz','v8o','hemi'];
+
+// Each part: options; each option = {n, c:cost, hp:power}. 
+const PART_DATA = {
+  charge: { name:'Тип наддува', options: [
+    {n:'Турбо', c:150, hp:14},
+    {n:'Нагнетатель', c:200, hp:16}
+  ]},
+  exhMan: { name:'Выпускной коллектор', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивный', c:110, hp:3},
+    {n:'Гоночный', c:230, hp:7},
+    {n:'Драговый', c:400, hp:13}
+  ]},
+  exhaust: { name:'Выхлопная система', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивная', c:100, hp:2},
+    {n:'Гоночная', c:210, hp:6},
+    {n:'Под мотором (драговая)', c:420, hp:13}
+  ]},
+  intake: { name:'Впускной коллектор', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивный', c:120, hp:3},
+    {n:'Гоночный', c:240, hp:7},
+    {n:'Драговый', c:420, hp:11},
+    {n:'Дросселя', c:360, hp:11, naOnly:true}
+  ]},
+  block: { name:'Блок двигателя', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивный', c:200, hp:4},
+    {n:'Усиленный', c:420, hp:9}
+  ]},
+  gasket: { name:'Прокладка ГБЦ', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Усиленная', c:300, hp:6}
+  ]},
+  head: { name:'ГБЦ', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивная', c:180, hp:4},
+    {n:'Гоночная', c:360, hp:9},
+    {n:'Драговая', c:600, hp:16}
+  ]},
+  crank: { name:'Коленвал', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивный', c:170, hp:3},
+    {n:'Усиленный', c:360, hp:8}
+  ]},
+  pistons: { name:'Поршневая система', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивная', c:160, hp:3},
+    {n:'Усиленная', c:340, hp:8}
+  ]},
+  pan: { name:'Поддон картера', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Гоночный', c:220, hp:5}
+  ]},
+  fuel: { name:'Топливный насос', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивный', c:130, hp:3},
+    {n:'Гоночный', c:280, hp:7},
+    {n:'Драговый', c:480, hp:14}
+  ]},
+  carb: { name:'Карбюратор', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Спортивный', c:180, hp:4},
+    {n:'Двойной', c:380, hp:10},
+    {n:'Двойной драговый', c:650, hp:18}
+  ]},
+  ecu: { name:'ЭБУ', options: [
+    {n:'Сток', c:0, hp:0},
+    {n:'Stage 1', c:250, hp:6},
+    {n:'Stage 2', c:520, hp:13},
+    {n:'Stage 3', c:900, hp:22},
+    {n:'Stage 4', c:1500, hp:34}
+  ]}
+};
+// order parts are rendered in the tuning list
+const TUNE_ORDER = ['exhMan','intake','block','gasket','head','crank','pistons','pan','fuel'];
+const CHARGE_OPTS = [
+  { n:'Атмо', c:0 },
+  { n:'Турбо', c:150 },
+  { n:'Нагнетатель', c:200 }
+];
+
+// ---- state ----
+let state = {
+  money: 500,
+  levels: {},     // engineId -> sold count
+  unlocked: { sr:1 },
+  active: null,   // engineId
+  parts: {},      // engineId -> { partId -> option idx }
+  charge: {},     // engineId -> option idx into CHARGE_OPTS (for V8_CHOOSE)
+  ecu: {}         // engineId -> {mix, boost, rev}
+};
+let bestHpSold = 0;
+
+const $ = (id) => document.getElementById(id);
+const moneyEl = $('moneyV'), builtEl = $('builtB'), bestEl = $('bestB');
+const garagePanel = $('garagePanel');
+
+function save() { try { localStorage.setItem('kr-eng2', JSON.stringify(state)); } catch (e) {} }
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem('kr-eng2'));
+    if (raw) { state = Object.assign(state, raw); return true; }
+  } catch (e) {}
+  return false;
+}
+function fmt(n) { return n >= 100000 ? Math.round(n/1000)+'k' : n >= 10000 ? (Math.round(n/100)/10).toFixed(1)+'k' : String(Math.round(n)); }
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function engineById(id) { return ENGINES.find(e => e.id === id); }
+function isUnlocked(id) { return !!state.unlocked[id]; }
+function totalBuilt() { return Object.values(state.levels).reduce((a,b)=>a+b,0); }
+
+function visibleParts(e) {
+  const list = TUNE_ORDER.slice();
+  if (e.carb) return list.concat(['carb']);
+  return list.concat(['ecu']);
+}
+function partIdx(e, id) { const p = state.parts[e.id] || {}; return p[id] != null ? p[id] : 0; }
+function chargeIdx(e) { return state.charge[e.id] != null ? state.charge[e.id] : 0; }
+function chargeName(e) { return CHARGE_OPTS[chargeIdx(e)].n; }
+function nativeBoost(e) {
+  // fixed-boost engines
+  if (e.boost === 'turbo') return 'turbo';
+  if (e.boost === 'super') return 'super';
+  return null; // choose
+}
+function effectiveCharge(e) { return nativeBoost(e) || CHARGE_OPTS[chargeIdx(e)].n; }
+
+function ecuConfig(e) { return state.ecu[e.id] || { mix:50, boost:30, rev:65 }; }
+
+function currHp(e) {
+  const chg = effectiveCharge(e).toLowerCase();
+  let hp = chg === 'турбо' ? 310 : chg === 'нагнетатель' ? 350 : 210;
+  visibleParts(e).forEach(id => {
+    const d = PART_DATA[id]; if (!d) return;
+    const o = d.options[partIdx(e,id)]; if (o) hp += o.hp;
+  });
+  if (!e.carb) { const ec = ecuConfig(e); const stg = partIdx(e,'ecu'); hp += stg * 6 + (ec.mix-50)/50*6 + (ec.boost-30)/60*5 + (ec.rev-65)/35*4; }
+  return Math.round(hp);
+}
+function estValue(e) {
+  // revenue = engine premium + hp payoff
+  const hp = currHp(e);
+  return Math.round(e.pay + hp * 0.55);
+}
+function isChargePending(e) { return !nativeBoost(e) && chargeIdx(e) === 0; }
+
+// ---- render engines list ----
+function renderEngines() {
+  const wrap = $('engines'); if (!wrap) return;
+  wrap.innerHTML = ENGINES.map(e => {
+    const unlocked = isUnlocked(e.id);
+    const sel = state.active === e.id;
+    return '<div class="engine' + (sel?' sel':'') + (unlocked?'':' locked') + '" data-id="' + e.id + '">' +
+      '<h3>' + esc(e.name) + (unlocked && totalBuilt() < e.req ? '' : '') + (unlocked ? '' : ' 🔒') + '</h3>' +
+      '<div class="desc">' + esc(e.desc) + '</div>' +
+      (unlocked
+        ? '<div class="pay">~' + fmt(estValue(e)) + ' за заказ</div>'
+        : '<div class="req">Разблокируется после <b>' + e.req + '</b> проданных</div>') +
+    '</div>';
+  }).join('');
+  wrap.querySelectorAll('.engine').forEach(el => {
+    el.addEventListener('click', () => {
+      const e = engineById(el.dataset.id);
+      if (!isUnlocked(e.id)) return;
+      setActive(e.id);
+    });
+  });
+}
+
+function renderStats() {
+  if (moneyEl) moneyEl.textContent = fmt(state.money);
+  if (builtEl) builtEl.textContent = 'Собрано: ' + totalBuilt();
+  if (bestEl) bestEl.textContent = 'Топ-ушло: ' + (bestHpSold ? fmt(bestHpSold)+' л.с.' : '—');
+}
+
+function log(msg) { const l = $('log'); if (l) l.textContent = msg; }
+
+function setActive(id) {
+  state.active = id;
+  save(); renderAll();
+}
+
+// ---- render active garage ----
+function renderActive() {
+  const e = engineById(state.active);
+  if (!e) { if (garagePanel) garagePanel.classList.add('hidden'); return; }
+  if (garagePanel) garagePanel.classList.remove('hidden');
+  $('activeEngineName').textContent = e.name;
+  $('activeEngineDesc').textContent = e.desc + ' · ' + (nativeBoost(e) ? 'заводская схема' : 'схема впуска: ' + chargeName(e));
+
+  // spec box
+  const hp = currHp(e);
+$('specBox').innerHTML =
+    '<div class="s"><div class="lbl">Мощность</div><div class="val" id="hpVal">' + hp + ' л.с.</div></div>' +
+    '<div class="s"><div class="lbl">Примерная выручка</div><div class="val">$' + fmt(estValue(e)) + '</div></div>' +
+    '<div class="s"><div class="lbl">Вложено в детали</div><div class="val">$' + fmt(partsCost(e)) + '</div></div>';
+
+  animateHp(hp);
+
+  drawEngineModel(e);
+
+  // charge chooser for V8
+  const cb = $('chargeBox');
+  if (cb) {
+    if (!nativeBoost(e)) {
+      cb.classList.remove('hidden');
+      $('chargeSeg').innerHTML = CHARGE_OPTS.map((o,i) =>
+        '<button type="button" class="' + (chargeIdx(e)===i?'on':'') + '" data-c="' + i + '">' + o.n + (o.c ? ' $'+o.c : '') + '</button>'
+      ).join('');
+      $('chargeSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+        const i = +b.dataset.c;
+        // picking turbo/super conflicts with дросселя intake -> reset to stock
+        if (i > 0 && partIdx(e,'intake') === 4) { setPart(e,'intake',0); log('Дросселя снимаются: они несовместимы с наддувом'); }
+        state.charge[e.id] = i; save(); renderAll();
+      }));
+    } else cb.classList.add('hidden');
+  }
+
+  // tunes
+  const tunes = $('tunes');
+  tunes.innerHTML = visibleParts(e).map(id => {
+    const d = PART_DATA[id];
+    const cur = partIdx(e,id);
+    return '<div class="tune">' +
+      '<div class="t-head"><span class="t-name">' + d.name + '</span><span class="t-state' + (cur>0?' on':'') + '">' + d.options[cur].n + '</span></div>' +
+      '<div class="seg">' + d.options.map((o,i) => {
+        // дросселя недоступны для движков с карбюратором (старый V8)
+        if (id === 'intake' && i === 4 && e.carb) return '';
+        const isNa = !nativeBoost(e) && chargeIdx(e) === 0;
+        const disabled = (id==='intake' && i===4 && !isNa);
+        return '<button type="button" data-p="' + id + '" data-i="' + i + '" class="' + (i===cur?'on':'') + '"' + (disabled?' disabled':'') + '>' + o.n + (o.c?' $'+o.c:'') + '</button>';
+      }).join('') + '</div>' +
+    '</div>';
+  }).join('');
+  tunes.querySelectorAll('button[data-p][data-i]').forEach(b => b.addEventListener('click', () => {
+    const e2 = engineById(state.active); if (!e2) return;
+    const id = b.dataset.p, i = +b.dataset.i;
+    if (state.money < PART_DATA[id].options[i].c) { log('Не хватает денег'); return; }
+    setPart(e2, id, i);
+  }));
+
+  // ecu panel (only non-carb engines)
+  const ep = $('ecuPanel');
+  if (ep) {
+    const hasEcu = !e.carb && partIdx(e,'ecu') > 0;
+    ep.classList.toggle('hidden', !hasEcu);
+    if (hasEcu) renderEcu(e);
+  }
+
+  // sell button
+  const pending = isChargePending(e);
+  $('sellBtn').disabled = pending;
+}
+
+function setPart(e, id, i) {
+  const cost = PART_DATA[id].options[i].c;
+  if (cost > state.money) { log('Не хватает денег'); return; }
+if (!state.parts[e.id]) state.parts[e.id] = {};
+  state.parts[e.id][id] = i;
+  state.money -= cost;
+  save(); renderAll();
+  if (i > 0) { log('Установлено: ' + PART_DATA[id].options[i].n + ' на ' + e.name); sparkBurst(); }
+  else log('Убран тюнинг: ' + PART_DATA[id].name);
+}
+
+// spark burst overlay (DOM particles over the engine viz)
+function sparkBurst() {
+  const host = document.querySelector('.eng-viz'); if (!host) return;
+  const r = host.getBoundingClientRect();
+  const x = r.left + r.width / 2, y = r.top + r.height / 2;
+  for (var i = 0; i < 26; i++) {
+    (function () {
+      var s = document.createElement('span');
+      s.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;width:3px;height:3px;border-radius:50%;background:#e11d2e;box-shadow:0 0 6px #e11d2e;z-index:6;pointer-events:none;';
+      var a = Math.random() * Math.PI * 2;
+      var d = 40 + Math.random() * 80;
+      var vx = Math.cos(a) * d, vy = Math.sin(a) * d - 40;
+      s.style.transition = 'transform .55s ease-out,opacity .55s ease-out';
+      document.body.appendChild(s);
+      requestAnimationFrame(function () { s.style.transform = 'translate(' + vx + 'px,' + vy + 'px)'; s.style.opacity = '0'; });
+      setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 600);
+    })();
+  }
+}
+
+function partsCost(e) {
+  let sum = 0;
+  visibleParts(e).forEach(id => { const d=PART_DATA[id]; const o=d.options[partIdx(e,id)]; sum+=(o?o.c:0); });
+  const chg = nativeBoost(e) ? 0 : CHARGE_OPTS[chargeIdx(e)].c;
+  return sum + chg;
+}
+
+// animated HP counter that ramps up to target
+let hpAnimTok = 0;
+function animateHp(target) {
+  const el = $('hpVal'); if (!el) return;
+  const tok = ++hpAnimTok;
+  const from = parseInt((el.textContent || '0').replace(/[^0-9]/g, ''), 10) || 0;
+  const t0 = performance.now();
+  const dur = 500;
+  (function step(now) {
+    if (tok !== hpAnimTok) return;
+    const k = Math.min(1, (now - t0) / dur);
+    const ease = 1 - Math.pow(1 - k, 3);
+    const v = Math.round(from + (target - from) * ease);
+    el.textContent = v + ' л.с.';
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+// draw a stylized engine on the canvas, showing installed parts
+function drawEngineModel(e) {
+  const cv = $('engCanvas'); if (!cv) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = cv.clientWidth || 520, h = cv.clientHeight || 260;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const cx = w / 2, cy = h / 2 + 8;
+  const chg = effectiveCharge(e).toLowerCase();
+
+  // block body frame
+  ctx.fillStyle = '#e8eaf0';
+  ctx.strokeStyle = '#c9cdd6';
+  ctx.lineWidth = 2;
+  rr(ctx, cx - 130, cy - 46, 260, 92, 12); ctx.fill(); ctx.stroke();
+
+  // cylinders / bore (rows by engine type)
+  const rows = /v8|uz|hemi|v8o/i.test(e.id) ? 2 : 1;
+  const cols = rows === 2 ? 4 : 6;
+  const bore = 22, gap = 40;
+  const startX = cx - ((cols - 1) * gap) / 2;
+  ctx.fillStyle = '#cfd3dd';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const bx = startX + c * gap, by = cy - 12 + r * 34;
+      ctx.fillStyle = '#cfd3dd';
+      ctx.beginPath(); ctx.arc(bx, by, bore / 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#9aa0ac';
+      ctx.beginPath(); ctx.arc(bx, by, bore / 2 - 7, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  // charge: turbo or supercharger on top, or nothing (NA)
+  if (chg === 'турбо' || chg === 'turbo') {
+    ctx.fillStyle = '#5b5b66'; ctx.beginPath(); ctx.arc(cx + 78, cy - 22, 20, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#3d3d46'; ctx.beginPath(); ctx.arc(cx + 78, cy - 22, 10, 0, Math.PI * 2); ctx.fill();
+  } else if (chg === 'нагнетатель' || chg === 'super') {
+    ctx.fillStyle = '#8a4432'; ctx.beginPath(); ctx.arc(cx - 78, cy - 22, 22, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#c9815f'; ctx.beginPath(); ctx.arc(cx - 78, cy - 22, 9, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // exhaust manifold
+  const exhi = partIdx(e, 'exhMan');
+  if (exhi > 0) {
+    ctx.strokeStyle = exhi >= 3 ? '#e11d2e' : '#c9cdd6';
+    ctx.lineWidth = 5;
+    for (let i = 0; i < cols; i++) {
+      const bx = startX + i * gap;
+      ctx.beginPath(); ctx.moveTo(bx, cy + 40); ctx.lineTo(bx + 14, cy + 56); ctx.stroke();
+    }
+  }
+
+  // intake plenum (colored by intake tuning)
+  const inti = partIdx(e, 'intake');
+  if (inti > 0) {
+    ctx.fillStyle = inti >= 4 ? '#e11d2e' : inti >= 3 ? '#d39a2c' : '#8fa0b8';
+    rr(ctx, cx - 60, cy - 56, 120, 18, 6); ctx.fill();
+  }
+
+  // crank (drawn at bottom)
+  const cri = partIdx(e, 'crank');
+  ctx.strokeStyle = cri > 0 ? '#e11d2e' : '#9aa0ac';
+  ctx.lineWidth = 7;
+  ctx.beginPath(); ctx.moveTo(cx - 120, cy + 48); ctx.lineTo(cx + 120, cy + 48); ctx.stroke();
+
+  // pistons glow when tuned
+  const psi = partIdx(e, 'pistons');
+  if (psi > 0) {
+    ctx.fillStyle = '#e11d2e'; ctx.globalAlpha = .35;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      ctx.beginPath(); ctx.arc(startX + c * gap, cy - 12 + r * 34, 12, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // carb for old V8 (drawn prominent)
+  if (e.carb) {
+    const carbi = partIdx(e, 'carb');
+    ctx.fillStyle = carbi >= 3 ? '#e11d2e' : carbi >= 2 ? '#d39a2c' : '#6b7280';
+    rr(ctx, cx - 22, cy - 70, 44, 22, 6); ctx.fill();
+  }
+
+  // hot parts: block & head glow by tuning level
+  const reli = partIdx(e, 'block') + partIdx(e, 'head');
+  if (reli > 0) {
+    ctx.strokeStyle = 'rgba(225,45,46,' + Math.min(.7, reli * .1) + ')';
+    ctx.lineWidth = 3;
+    rr(ctx, cx - 130, cy - 46, 260, 92, 12); ctx.stroke();
+  }
+}
+function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+
+// ---- ecu sliders ----
+function renderEcu(e) {
+  const sl = $('ecuSliders');
+  const ec = ecuConfig(e);
+  const cfg = [
+    { k:'mix', label:'Топливная смесь', min:0, max:100, unit:'%', note:'богатая → бедная, +мощь, риск детонации' },
+    { k:'boost', label:'Наддув', min:0, max:100, unit:'%', note:'больше буста → больше л.с., риск' },
+    { k:'rev', label:'Максимальные обороты', min:0, max:100, unit:'%', note:'отсечка выше → мощь, риск' }
+  ];
+  sl.innerHTML = cfg.map(c => {
+    const v = ec[c.k] != null ? ec[c.k] : 50;
+    return '<div class="slider">' +
+      '<label>' + c.label + ' <span>' + v + c.unit + '</span></label>' +
+      '<input type="range" min="' + c.min + '" max="' + c.max + '" value="' + v + '" data-k="' + c.k + '">' +
+      '<div class="note">' + c.note + '</div>' +
+    '</div>';
+  }).join('');
+  sl.querySelectorAll('input[type=range]').forEach(inp => inp.addEventListener('input', () => {
+    const e2 = engineById(state.active); if (!e2) return;
+    if (!state.ecu[e2.id]) state.ecu[e2.id] = { mix:50, boost:30, rev:65 };
+    state.ecu[e2.id][inp.dataset.k] = +inp.value;
+    save(); renderActive(); // refresh spec numbers
+  }));
+}
+
+// ---- sell ----
+function doSell() {
+  const e = engineById(state.active); if (!e) return;
+  if (isChargePending(e)) { log('Сначала выбери наддув для впуска'); return; }
+  const hp = currHp(e);
+  const val = estValue(e);
+  state.money += val;
+  state.levels[e.id] = (state.levels[e.id]||0) + 1;
+  if (hp > bestHpSold) bestHpSold = hp;
+  // unlock next engine if total sold crosses thresholds
+  ENGINES.forEach(x => { if (!isUnlocked(x.id) && totalBuilt() >= x.req) state.unlocked[x.id] = 1; });
+  const total = totalBuilt();
+  save();
+  // reset current engine's tuning for the next order
+  state.parts[e.id] = {}; state.charge[e.id] = undefined;
+  renderAll();
+log('Движок ' + e.name + ' продан за $' + fmt(val) + ' (' + hp + ' л.с.)' + (total===e.req?' · Открыт новый движок!':''));
+  speedFlash();
+  if (window.krConfetti) { var b = document.querySelector('.eng-sell'); var r = b ? b.getBoundingClientRect() : null; krConfetti(r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null); }
+}
+
+function speedFlash() {
+  let el = document.querySelector('.speedflash');
+  if (!el) { el = document.createElement('div'); el.className = 'speedflash'; document.body.appendChild(el); }
+  el.classList.remove('go');
+  void el.offsetWidth;
+  el.classList.add('go');
+}
+
+// ---- reset (double-click) ----
+let resetArmed = false;
+const resetBtn = $('resetBtn');
+if (resetBtn) resetBtn.addEventListener('click', () => {
+  if (!resetArmed) { resetArmed = true; resetBtn.textContent = 'Точно сбросить? Нажми ещё раз'; resetBtn.disabled = false; setTimeout(()=>{ resetArmed=false; resetBtn.textContent='Сбросить прогресс'; }, 3000); return; }
+  try { localStorage.removeItem('kr-eng2'); } catch(e){}
+  state = { money:500, levels:{}, unlocked:{sr:1}, active:null, parts:{}, charge:{}, ecu:{} };
+  bestHpSold = 0;
+  resetArmed = false; resetBtn.textContent = 'Сбросить прогресс';
+  renderAll(); log('Прогресс сброшен');
+});
+
+function renderAll() { renderStats(); renderEngines(); renderActive(); }
+
+// ---- boot ----
+function boot() {
+  load();
+  bestHpSold = 0;
+  Object.keys(state.levels).forEach(id => { const hp = 0; /* historical best not stored; keep 0 */ });
+  // restore unlocked consistency
+  ENGINES.forEach(x => { if (totalBuilt() >= x.req) state.unlocked[x.id] = 1; });
+  const sell = $('sellBtn'); if (sell) sell.addEventListener('click', doSell);
+  renderAll();
+  if (!state.active) {
+    // auto-select first unlocked
+    const first = ENGINES.find(e => isUnlocked(e.id));
+    if (first) state.active = first.id;
+  }
+  renderAll();
+}
+
+// fireflies
+(function () {
+  const host = $('embers'); if (!host) return;
+  const n = 22;
+  host.innerHTML = '';
+  for (let i=0;i<n;i++){
+    const s = document.createElement('span');
+    s.className = 'ember';
+    const size = 6 + Math.random()*18;
+    s.style.width = s.style.height = size + 'px';
+    s.style.left = (Math.random()*100) + '%';
+    s.style.top = (Math.random()*100) + '%';
+    const dur = 6 + Math.random()*9;
+    s.style.animationDuration = dur + 's';
+    s.style.animationDelay = (Math.random()*dur) + 's';
+    s.style.setProperty('--dx', ((Math.random()*200-100)) + 'px');
+    s.style.setProperty('--dy', ((Math.random()*200-100)) + 'px');
+    host.appendChild(s);
+  }
+})();
+
+// drifting smoke blobs
+(function () {
+  const host = $('smoke'); if (!host) return;
+  const n = 6;
+  host.innerHTML = '';
+  for (let i=0;i<n;i++){
+    const s = document.createElement('span');
+    s.style.width = s.style.height = (Math.random()*360 + 220) + 'px';
+    s.style.left = (Math.random()*100) + '%';
+    s.style.top = (Math.random()*100) + '%';
+    s.style.setProperty('--so', (0.05 + Math.random()*0.08).toFixed(3));
+    s.style.setProperty('--sd', (12 + Math.random()*14) + 's');
+    s.style.setProperty('--sdx', ((Math.random()*160-80)) + 'px');
+    s.style.setProperty('--sdy', ((Math.random()*160-80)) + 'px');
+    s.style.setProperty('--ss', (1 + Math.random()*0.6).toFixed(2));
+    s.style.animationDelay = (Math.random()*-14) + 's';
+    host.appendChild(s);
+  }
+})();
+
+boot();
+</script>
+
+<script>
+(function(){var el=document.getElementById('scrollProg');if(!el)return;function upd(){var h=document.documentElement;var s=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight||1);el.style.width=Math.min(100,Math.max(0,s*100))+'%';}window.addEventListener('scroll',upd,{passive:true});upd();})();
+</script>
+<script>
+(function(){var l=document.getElementById('pageLoader');if(!l)return;window.addEventListener('load',function(){setTimeout(function(){l.classList.add('hide');setTimeout(function(){l.remove();},500);},250);});setTimeout(function(){l.classList.add('hide');setTimeout(function(){l.remove();},500);},3500);})();
+</script><script src="site-effects.js"></script>
+<script src="site-vfx.js"></script>
+</body>
+</html>

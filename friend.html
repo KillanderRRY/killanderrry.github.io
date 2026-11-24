@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Максим — Monolith</title>
+<meta name="description" content="Личная страница Максима (Monolith / no_Jason).">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--a:225,29,46;--a2:255,46,63;--nav-rgb:10,10,12;
+  }
+  html[data-theme="blue"]{
+    --bg:#070b14;--bg-2:#0c1120;--card:#111831;--card-2:#171f3d;
+    --text:#eef2ff;--muted:#9aa7d8;--border:#26335e;--nav-rgb:7,11,20;
+  }
+  html[data-accent="red"]{--red:#e11d2e;--red-2:#ff2e3f;--a:225,29,46;--a2:255,46,63;}
+  html[data-accent="gray"]{--red:#9aa0aa;--red-2:#c2c7cf;--a:154,160,170;--a2:194,199,207;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .container{width:min(1080px,92%);margin:0 auto}
+  header{position:sticky;top:0;z-index:50;background:var(--card-2);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
+  .f-left{display:flex;align-items:center;gap:12px}
+  .f-back{text-decoration:none;color:var(--red-2);font-size:1.4rem;font-weight:800;line-height:1;transition:transform .2s}
+  .f-back:hover{transform:translateX(-3px)}
+  .f-logo{font-weight:900;letter-spacing:1px;font-size:1.05rem}
+  .nav-links{display:flex;gap:20px;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--red-2)}
+  main{padding:64px 0 100px}
+  .card{max-width:560px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:36px 32px;text-align:center}
+  .avatar{width:110px;height:110px;border-radius:50%;margin:0 auto 18px;overflow:hidden;border:3px solid var(--red);box-shadow:0 0 26px rgba(var(--a),.35);position:relative}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .nick{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900}
+  .nick span{color:var(--red)}
+  .roles{margin-top:8px;color:var(--muted);font-size:.95rem}
+  .roles b{color:var(--text);font-weight:700}
+  .placeholder{margin-top:28px;padding:20px;border:1.5px dashed var(--border);border-radius:12px;color:var(--muted);font-size:.92rem}
+  .placeholder .ph-label{display:inline-block;font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
+  .friend-stats{display:flex;justify-content:center;gap:16px;margin-top:28px}
+  .fstat{background:var(--card-2);border:1px solid var(--border);border-radius:14px;padding:16px 22px;min-width:140px}
+  .fstat-num{font-size:1.6rem;font-weight:900;color:var(--red-2)}
+  .fstat-lab{font-size:.78rem;color:var(--muted);margin-top:4px}
+  .timeline{margin-top:28px;text-align:left;display:flex;flex-direction:column;gap:14px}
+  .tl-item{display:flex;gap:12px;align-items:flex-start}
+  .tl-dot{width:10px;height:10px;border-radius:50%;background:var(--red);margin-top:6px;box-shadow:0 0 8px rgba(var(--a),.6);flex-shrink:0}
+  .tl-item b{display:block}
+  .tl-item p{color:var(--muted);font-size:.88rem;margin-top:2px}
+  .f-special{display:inline-block;margin-top:24px;color:var(--muted);font-size:.82rem;text-decoration:none;transition:color .2s}
+  .f-special:hover{color:var(--red-2)}
+  .friend-by{margin-top:14px;color:var(--muted);font-size:.82rem}
+  .friend-by a{color:var(--red-2);text-decoration:none}
+  .friend-by a:hover{text-decoration:underline}
+  .f-totop{position:fixed;right:22px;bottom:22px;z-index:60;width:46px;height:46px;border-radius:50%;border:1px solid var(--border);background:var(--card-2);color:var(--red-2);cursor:pointer;font-size:1.3rem;opacity:0;visibility:hidden;transform:translateY(12px);transition:.3s}
+  .f-totop.show{opacity:1;visibility:visible;transform:none}
+  .f-totop:hover{background:var(--red);color:#fff;border-color:transparent}
+  @media (max-width:560px){ .nav-links{gap:12px;font-size:.8rem} }
+</style>
+</head>
+<body>
+<script>
+  (function () {
+    try {
+      var th = localStorage.getItem('mf-theme') || 'dark';
+      var ac = localStorage.getItem('mf-accent') || 'blue';
+      var root = document.documentElement;
+      root.setAttribute('data-theme', th);
+      root.setAttribute('data-accent', ac);
+    } catch (e) {}
+  })();
+</script>
+
+<header>
+  <div class="container">
+    <nav>
+      <div class="f-left">
+        <a href="index.html" class="f-back" aria-label="На главную KillanderRRY">←</a>
+        <span class="f-logo">Monolith</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="friend.html" class="active">Обо мне</a></li>
+        <li><a href="friend-gallery.html">Галерея</a></li>
+        <li><a href="friend-settings.html">Настройки</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="card">
+      <div class="avatar"><img src="avatar-maksim.png" alt="Аватар Максима" onerror="this.style.display='none'"></div>
+      <div class="nick">Максим <span>Monolith</span></div>
+      <div class="roles">Так же известен как <b>no_Jason</b></div>
+
+      <div class="placeholder">
+        <div class="ph-label">Описание</div>
+        <span>Здесь появится описание — спросим у Максима.</span>
+      </div>
+
+      <div class="friend-stats">
+        <div class="fstat">
+          <div class="fstat-num" id="daysF" data-cont="0">—</div>
+          <div class="fstat-lab">Дней дружбы</div>
+        </div>
+      </div>
+
+      <div class="placeholder">
+        <div class="ph-label">Что я люблю</div>
+        <span>Мини-визитка — добавится, когда Максим расскажет.</span>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-item"><span class="tl-dot"></span><div><b>Начало пути</b><p>Когда мы познакомились — добавится позже.</p></div></div>
+      </div>
+
+      <div class="placeholder">
+        <div class="ph-label">Рекорды · Игры</div>
+        <span>Таблица рекордов появится, когда договаримся с Максимом.</span>
+      </div>
+
+      <a class="f-special" href="friend-secret.html">·· секретный раздел ··</a>
+      <div class="friend-by">Страница сделана <a href="index.html">KillanderRRY</a> для Максима 💙</div>
+    </div>
+  </div>
+</main>
+<script>
+  // Дни дружбы: число дней с фиксированной даты старта (пока placeholder-дата)
+  (function () {
+    var el = document.getElementById('daysF');
+    if (!el) return;
+    var start = el.getAttribute('data-cont');
+    try {
+      var saved = localStorage.getItem('mf-friendship-start');
+      if (saved) { start = saved; el.textContent = Math.max(0, Math.floor((Date.now() - new Date(start).getTime()) / 86400000)); }
+    } catch (e) { el.textContent = '—'; }
+  })();
+  // Кнопка «наверх»
+  (function () {
+    var btn = document.createElement('button');
+    btn.textContent = '↑';
+    btn.className = 'f-totop';
+    btn.setAttribute('aria-label', 'Наверх');
+    document.body.appendChild(btn);
+    btn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    window.addEventListener('scroll', function () {
+      var y = window.pageYOffset || document.documentElement.scrollTop;
+      btn.classList.toggle('show', y > 300);
+    }, { passive: true });
+  })();
+</script>
+<script src="site-vfx.js"></script>
+</body>
+</html>

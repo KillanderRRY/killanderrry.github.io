@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Настройки — KillanderRRY</title>
+<meta name="description" content="Настройки сайта KillanderRRY: выбор темы и цвета оформления.">
+<link rel="stylesheet" href="site-effects.css">
+<link rel="stylesheet" href="site-vfx.css">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--shadow:0 20px 50px rgba(0,0,0,.55);
+    --a:225,29,46;--a2:255,46,63;--nav-rgb:10,10,12;--tag-soft:#ffd9dd;
+  }
+  /* ---- Theme selectors ---- */
+  html[data-theme="light"]{
+    --bg:#f4f4f6;--bg-2:#eaeaee;--card:#ffffff;--card-2:#f2f2f5;
+    --text:#18181c;--muted:#5c5c68;--border:#d6d6de;
+    --nav-rgb:244,244,246;--shadow:0 20px 50px rgba(0,0,0,.12);
+  }
+  html[data-theme="red"]{
+    --bg:#110507;--bg-2:#1a0909;--card:#241010;--card-2:#2b1414;
+    --red:#ff3b45;--red-2:#ff5f6b;--text:#fff1f3;--muted:#c9a6aa;
+    --border:#4a2127;--nav-rgb:17,5,7;
+    --a:255,59,69;--a2:255,95,107;--tag-soft:#ffd9dd;
+  }
+  html[data-accent="purple"]{
+    --red:#a855f7;--red-2:#c084fc;--a:168,85,247;--a2:192,132,252;--tag-soft:#e5d5ff;
+  }
+  html[data-accent="blue"]{
+    --red:#3b82f6;--red-2:#60a5fa;--a:59,130,246;--a2:96,165,250;--tag-soft:#d3e3ff;
+  }
+  html[data-accent="yellow"]{
+    --red:#eab308;--red-2:#facc15;--a:234,179,8;--a2:250,204,21;--tag-soft:#fff2c2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(600px 400px at 15% 0%,rgba(var(--a),.14),transparent 60%),radial-gradient(700px 500px at 85% 100%,rgba(var(--a),.12),transparent 60%),radial-gradient(500px 340px at 50% 45%,rgba(var(--a),.08),transparent 65%);animation:bgDrift 20s ease-in-out infinite alternate}
+  @keyframes bgDrift{from{opacity:.6;background-position:0 0,100% 100%,50% 45%}to{opacity:1;background-position:8% 12%,90% 86%,55% 40%}}
+  /* ---- Aurora blobs ---- */
+  .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .aurora span{position:absolute;border-radius:50%;filter:blur(70px);opacity:.26;will-change:transform}
+  .aurora .b1{width:440px;height:440px;background:radial-gradient(circle,rgba(var(--a),.5),transparent 70%);top:-120px;left:8%;animation:drift1 26s ease-in-out infinite alternate}
+  .aurora .b2{width:380px;height:380px;background:radial-gradient(circle,rgba(var(--a),.5),transparent 70%);bottom:6%;right:6%;animation:drift2 32s ease-in-out infinite alternate}
+  .aurora .b3{width:300px;height:300px;background:radial-gradient(circle,rgba(var(--a2),.35),transparent 70%);top:38%;left:52%;animation:drift3 40s ease-in-out infinite alternate}
+  @keyframes drift1{from{transform:translate(0,0)}to{transform:translate(90px,-60px)}}
+  @keyframes drift2{from{transform:translate(0,0)}to{transform:translate(-100px,-70px)}}
+  @keyframes drift3{from{transform:translate(0,0)}to{transform:translate(70px,50px)}}
+  /* ---- Tilt ---- */
+  .tilt{transition:box-shadow .3s ease}
+  .tilt:hover{box-shadow:0 24px 60px rgba(var(--a),.18)}
+  .tilt{will-change:transform}
+  /* ---- Reveal ---- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in-view{opacity:1;transform:none}
+  main,header{position:relative;z-index:1}
+  a{color:inherit}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--red-2);outline-offset:3px;border-radius:4px}
+  ::selection{background:rgba(var(--a),.55);color:#fff}
+
+  /* ---- Custom cursor ---- */
+  body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .logo{cursor:none}
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%}
+  .cursor-dot{width:8px;height:8px;margin:-4px 0 0 -4px;background:var(--red-2);box-shadow:0 0 12px var(--red),0 0 24px rgba(var(--a),.6);will-change:transform}
+  .cursor-ring{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;border:1.5px solid rgba(var(--a2),.85);background:transparent;transition:transform .12s ease-out;will-change:transform}
+  .cursor-ring.is-hover{transform:scale(1.5);border-color:var(--red-2);box-shadow:0 0 12px rgba(var(--a),.8)}
+  @media (hover:none),(pointer:coarse){ .cursor-dot,.cursor-ring{display:none} }
+
+  /* ---- Global particles ---- */
+  .global-particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+  /* ---- Section line divider ---- */
+  .section-line{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.55;box-shadow:0 0 14px rgba(var(--a),.5)}
+
+  
+  /* ---- Scroll progress bar ---- */
+  
+  /* ---- Page loader ---- */
+  .loader{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .5s ease,visibility .5s ease}
+  .loader.hide{opacity:0;visibility:hidden}
+  .loader .flag{width:52px;height:34px;border-radius:4px;overflow:hidden;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/34px 34px;box-shadow:0 0 26px rgba(var(--a),.9);animation:pulse .9s ease-in-out infinite alternate}
+  .loader .pole{width:4px;height:58px;background:var(--muted);border-radius:2px;margin-left:6px}
+  .loader-wrap{display:flex;align-items:center}
+  @keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(1.12);opacity:1}}.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--red),var(--red-2));box-shadow:0 0 12px rgba(var(--a),.8)}.container{width:min(1080px,92%);margin:0 auto}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(var(--nav-rgb),.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;letter-spacing:.5px;text-decoration:none}
+  .logo span{color:var(--red)}
+  .nav-links{display:flex;gap:20px;list-style:none}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;transition:color .2s;position:relative;padding-bottom:3px}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--red-2));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--red-2)}
+
+  .page-hero{position:relative;padding:72px 0 30px;text-align:center;overflow:hidden}
+  .page-hero::before{content:"";position:absolute;inset:auto -20% -60% -20%;height:70%;background:radial-gradient(ellipse at center,rgba(var(--a),.22),transparent 65%);filter:blur(20px);pointer-events:none}
+  .eyebrow{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:2px;color:var(--red-2);text-transform:uppercase;margin-bottom:14px}
+  .page-hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;letter-spacing:-1px;line-height:1.1}
+  .page-hero p{color:var(--muted);max-width:52ch;margin:16px auto 0}
+
+  /* ---- Settings layout ---- */
+  .settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;padding:36px 0 70px}
+  .setting-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden}
+  .setting-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent);opacity:.7}
+  .setting-card h2{font-size:1.3rem;font-weight:800;margin-bottom:4px}
+  .setting-card .sub{color:var(--muted);font-size:.9rem;margin-bottom:20px}
+
+  .options{display:flex;gap:12px;flex-wrap:wrap}
+  .theme-opt{flex:1;min-width:120px;border:1.5px solid var(--border);border-radius:12px;padding:12px;background:var(--card-2);cursor:pointer;text-align:center;font-weight:700;font-size:.9rem;color:var(--muted);transition:.2s;font-family:inherit}
+  .theme-opt:hover{border-color:var(--red);color:var(--text);transform:translateY(-2px)}
+  .theme-opt.active{border-color:var(--red);color:var(--text);box-shadow:0 0 0 1px var(--red),0 10px 24px rgba(var(--a),.25)}
+  .theme-opt i{display:block;width:100%;height:34px;border-radius:8px;margin-bottom:10px;border:1px solid var(--border)}
+
+  .swatches{display:flex;gap:12px;flex-wrap:wrap}
+  .swatch{width:52px;height:52px;border-radius:50%;cursor:pointer;position:relative;transition:transform .2s;border:3px solid transparent}
+  .swatch:hover{transform:scale(1.12)}
+  .swatch.active{border-color:var(--text);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--red),0 0 22px rgba(var(--a),.6)}
+  .swatch.red{background:linear-gradient(135deg,#e11d2e,#ff2e3f)}
+  .swatch.purple{background:linear-gradient(135deg,#a855f7,#c084fc)}
+  .swatch.blue{background:linear-gradient(135deg,#3b82f6,#60a5fa)}
+  .swatch.yellow{background:linear-gradient(135deg,#eab308,#facc15)}
+  .swatch-name{text-align:center;margin-top:8px;font-size:.75rem;color:var(--muted)}
+
+  /* ---- Live preview panel ---- */
+  .preview-card{margin-top:24px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+  .preview-card h3{font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+  .preview-box{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:16px;transition:background .4s,border-color .4s}
+  .preview-nav{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  .preview-nav .plogo{font-weight:800}.preview-nav .plogo span{color:var(--red)}
+  .preview-nav .plinks{display:flex;gap:14px;font-size:.8rem;color:var(--muted)}
+  .preview-nav .plinks b{color:var(--red-2)}
+  .preview-title{font-size:1.5rem;font-weight:900}
+  .preview-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(var(--a),.12);border:1px solid rgba(var(--a),.4);color:var(--tag-soft);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:700}
+  .preview-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;border:none;padding:12px 22px;border-radius:12px;font-weight:800;font-size:.95rem;cursor:pointer;box-shadow:0 10px 24px rgba(var(--a),.4)}
+
+  /* ---- Extra visual flair ---- */
+  .flair{position:relative;margin:-10px 0 6px;display:flex;gap:10px}
+  .flair-span{flex:1;height:4px;border-radius:4px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.6}
+  .spark{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--red-2);box-shadow:0 0 12px var(--red);top:-14px;animation:sparkFloat 6s ease-in-out infinite}
+  @keyframes sparkFloat{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-24px);opacity:1}}
+
+  .badge-demo{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;padding:8px 16px;border-radius:999px;font-weight:800;box-shadow:0 8px 20px rgba(var(--a),.4)}
+  .glass-card{background:rgba(var(--nav-rgb),.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(var(--a),.25);border-radius:12px;padding:14px 18px}
+
+  .reset-btn{margin-top:24px;background:transparent;border:1.5px solid var(--border);color:var(--muted);font-weight:700;padding:12px 22px;border-radius:12px;cursor:pointer;transition:.2s;font-family:inherit}
+  .reset-btn:hover{border-color:var(--red);color:var(--text)}
+
+  @media (max-width:560px){
+    .nav-links{gap:12px;font-size:.8rem}
+    .settings-grid{gap:16px}
+  }
+</style>
+</head>
+<body>
+<div class="loader" id="pageLoader"><div class="loader-wrap"><div class="flag"></div><div class="pole"></div></div></div>
+<div class="scroll-progress" id="scrollProg" aria-hidden="true"></div>
+<script>
+  (function () {
+    try {
+      var th = localStorage.getItem('kr-theme') || 'dark';
+      var ac = localStorage.getItem('kr-accent') || 'red';
+      var root = document.documentElement;
+      root.setAttribute('data-theme', th);
+      root.setAttribute('data-accent', ac);
+    } catch (e) {}
+  })();
+</script>
+<div class="aurora" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo">Killander<span>RRY</span><span class="logo-eq" aria-hidden="true"><i></i><i></i><i></i></span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="mods.html">Моды</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="download.html">Скачать</a></li>
+        <li><a href="youtube.html">YouTube</a></li>
+        <li><a href="design.html">Дизайн</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="settings.html" class="active">Настройки</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="section-line" aria-hidden="true"></div>
+    <div class="container">
+      <span class="eyebrow">Настройки</span>
+      <h1>Оформление сайта</h1>
+      <p>Выбери фон и фирменный цвет — настройки сохранятся для всех страниц.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="settings-grid">
+        <div class="setting-card tilt reveal">
+          <div class="flair" aria-hidden="true">
+            <span class="flair-span"></span>
+            <span class="spark" style="left:12%"></span>
+          </div>
+          <h2>Тема</h2>
+          <p class="sub">Цвет фона страницы</p>
+          <div class="options" role="radiogroup" aria-label="Тема">
+            <button class="theme-opt" data-theme-val="dark" data-kind="theme">
+              <i style="background:linear-gradient(135deg,#0a0a0c,#23232c)"></i>Чёрная
+            </button>
+            <button class="theme-opt" data-theme-val="light" data-kind="theme">
+              <i style="background:linear-gradient(135deg,#f4f4f6,#e0e0e8)"></i>Белая
+            </button>
+            <button class="theme-opt" data-theme-val="red" data-kind="theme">
+              <i style="background:linear-gradient(135deg,#110507,#3a1414)"></i>Красно-чёрная
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-card tilt reveal">
+          <div class="flair" aria-hidden="true">
+            <span class="flair-span"></span>
+            <span class="spark" style="left:78%"></span>
+          </div>
+          <h2>Второй цвет</h2>
+          <p class="sub">Акцент оформления</p>
+          <div class="swatches" role="radiogroup" aria-label="Акцентный цвет">
+            <div class="swatch-wrap">
+              <button class="swatch red" data-accent-val="red" data-kind="accent" aria-label="Красный"></button>
+              <div class="swatch-name">Красный</div>
+            </div>
+            <div class="swatch-wrap">
+              <button class="swatch purple" data-accent-val="purple" data-kind="accent" aria-label="Фиолетовый"></button>
+              <div class="swatch-name">Фиолетовый</div>
+            </div>
+            <div class="swatch-wrap">
+              <button class="swatch blue" data-accent-val="blue" data-kind="accent" aria-label="Синий"></button>
+              <div class="swatch-name">Синий</div>
+            </div>
+            <div class="swatch-wrap">
+              <button class="swatch yellow" data-accent-val="yellow" data-kind="accent" aria-label="Жёлтый"></button>
+              <div class="swatch-name">Жёлтый</div>
+            </div>
+          </div>
+
+          <div class="preview-card">
+            <h3>Живое превью</h3>
+            <div class="preview-box" id="previewBox">
+              <div class="preview-nav">
+                <div class="plogo">Killander<span>RRY</span></div>
+                <div class="plinks"><b>Главная</b><span>Моды</span><span>Галерея</span></div>
+              </div>
+              <div class="preview-title">Моды для Minecraft</div>
+              <div><span class="preview-pill">● Speed · Drift</span></div>
+              <div><button class="preview-btn">Погнали</button></div>
+            </div>
+          </div>
+        </div>
+
+<div class="setting-card tilt reveal">
+          <div class="flair" aria-hidden="true">
+            <span class="flair-span"></span>
+            <span class="spark" style="left:45%"></span>
+          </div>
+          <h2>Анимации</h2>
+          <p class="sub">Включи или выключи плавающие частицы на всех страницах</p>
+          <div class="options">
+            <button class="theme-opt" id="partsOn" data-kind="particles" data-val="on">Вкл</button>
+            <button class="theme-opt" id="partsOff" data-kind="particles" data-val="off">Выкл</button>
+          </div>
+        </div>
+
+        <div class="setting-card tilt reveal">
+          <div class="flair" aria-hidden="true">
+            <span class="flair-span"></span>
+            <span class="spark" style="left:30%"></span>
+          </div>
+          <h2>Ночные звёзды</h2>
+          <p class="sub">Звёздный поток на фоне</p>
+          <div class="options">
+            <button class="theme-opt" data-kind="fx-stars" data-val="on">Вкл</button>
+            <button class="theme-opt" data-kind="fx-stars" data-val="off">Выкл</button>
+          </div>
+          <label class="fx-range" for="starsCount" style="display:block;margin-top:16px">
+            <span style="font-size:.85rem;color:var(--muted)">Количество частиц</span>
+            <input type="range" id="starsCount" min="10" max="180" step="5" value="60" style="width:100%;margin-top:8px;accent-color:var(--red)">
+          </label>
+          <label class="fx-range" for="starsSpeed" style="display:block;margin-top:14px">
+            <span style="font-size:.85rem;color:var(--muted)">Скорость полёта</span>
+            <input type="range" id="starsSpeed" min="0.2" max="3" step="0.1" value="1" style="width:100%;margin-top:8px;accent-color:var(--red)">
+          </label>
+          <label style="display:block;margin-top:14px">
+            <span style="font-size:.85rem;color:var(--muted)">Направление</span>
+            <select id="starsDir" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card-2);color:var(--text)">
+              <option value="down">Вниз</option>
+              <option value="up">Вверх</option>
+              <option value="left">Влево</option>
+              <option value="right">Вправо</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="setting-card tilt reveal">
+          <div class="flair" aria-hidden="true">
+            <span class="flair-span"></span>
+            <span class="spark" style="left:65%"></span>
+          </div>
+          <h2>Дым / туман</h2>
+          <p class="sub">Медленно плывущие мягкие пятна на фоне</p>
+          <div class="options">
+            <button class="theme-opt" data-kind="fx-smoke" data-val="on">Вкл</button>
+            <button class="theme-opt" data-kind="fx-smoke" data-val="off">Выкл</button>
+          </div>
+        </div>
+
+        <div class="setting-card tilt reveal">
+          <div class="flair" aria-hidden="true">
+            <span class="flair-span"></span>
+            <span class="spark" style="left:20%"></span>
+          </div>
+          <h2>Клик-вспышка</h2>
+          <p class="sub">Расходящееся кольцо в точке клика</p>
+          <div class="options">
+            <button class="theme-opt" data-kind="fx-click" data-val="on">Вкл</button>
+            <button class="theme-opt" data-kind="fx-click" data-val="off">Выкл</button>
+          </div>
+        </div>
+
+        <div class="setting-card tilt reveal">
+          <div class="flair" aria-hidden="true">
+            <span class="flair-span"></span>
+            <span class="spark" style="left:80%"></span>
+          </div>
+          <h2>Плёночное зерно</h2>
+          <p class="sub">Шум поверх всей страницы (атмосфера плёнки)</p>
+          <div class="options">
+            <button class="theme-opt" data-kind="fx-grain" data-val="on">Вкл</button>
+            <button class="theme-opt" data-kind="fx-grain" data-val="off">Выкл</button>
+          </div>
+          <label class="fx-range" for="grainInt" style="display:block;margin-top:16px">
+            <span style="font-size:.85rem;color:var(--muted)">Сила зернистости</span>
+            <input type="range" id="grainInt" min="0" max="0.15" step="0.01" value="0.05"
+                   style="width:100%;margin-top:8px;accent-color:var(--red)">
+          </label>
+        </div>
+      </div>
+
+<div style="text-align:center;padding-bottom:70px">
+        <button class="reset-btn" id="resetBtn">Сбросить настройки</button>
+        <button class="reset-btn" id="exportBtn" style="margin-left:10px">Экспорт настроек</button>
+        <button class="reset-btn" id="importBtn" style="margin-left:10px">Импорт настроек</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none">
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  function accentRGB(){ const cs = getComputedStyle(document.documentElement); return (cs.getPropertyValue('--a') || '225,29,46').trim().split(/\s+/).join(','); }
+
+  if (finePointer) {
+    document.body.classList.add('has-cursor');
+    const dot = document.createElement('div'); dot.className = 'cursor-dot';
+    const ring = document.createElement('div'); ring.className = 'cursor-ring';
+    document.body.appendChild(dot); document.body.appendChild(ring);
+    let mx = -100, my = -100, rx = mx, ry = my;
+    window.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+      ring.classList.toggle('is-hover', !!e.target.closest('a,button,.theme-opt,.swatch,input,select,textarea,label'));
+    }, { passive: true });
+    (function ringLoop(){ rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16; ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)'; requestAnimationFrame(ringLoop); })();
+  }
+
+  if (!reduceMotion && (function(){ try { return (localStorage.getItem('kr-particles') || 'on') !== 'off'; } catch (e) { return true; } })()) {
+    const gpCv = document.createElement('canvas');
+    gpCv.className = 'global-particles';
+    document.body.appendChild(gpCv);
+    const gctx = gpCv.getContext('2d');
+    const gdpr = Math.min(devicePixelRatio || 1, 2);
+    let gparts;
+    const gResize = () => {
+      gpCv.width = innerWidth * gdpr; gpCv.height = innerHeight * gdpr;
+      const n = Math.min(50, Math.floor(innerWidth / 28));
+      gparts = Array.from({ length: n }, () => ({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 0.6+Math.random()*1.8, s: 0.08+Math.random()*0.35, alpha: 0.1+Math.random()*0.3, drift: Math.random()*Math.PI*2 }));
+    };
+    gResize(); window.addEventListener('resize', gResize);
+    let gt = 0;
+    (function gLoop(){
+      gt += 0.01;
+      gctx.setTransform(gdpr,0,0,gdpr,0,0); gctx.clearRect(0,0,innerWidth,innerHeight);
+      gparts.forEach((p) => {
+        p.y -= p.s; p.x += Math.sin(gt + p.drift) * 0.2;
+        if (p.y < -10) { p.y = innerHeight + 10; p.x = Math.random() * innerWidth; }
+        gctx.beginPath(); gctx.fillStyle = 'rgba(' + accentRGB() + ',' + p.alpha + ')'; gctx.arc(p.x, p.y, p.r, 0, Math.PI*2); gctx.fill();
+      });
+      requestAnimationFrame(gLoop);
+    })();
+  }
+
+  if (!reduceMotion) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.tilt').forEach((el) => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = 'perspective(700px) rotateY(' + (px * 8) + 'deg) rotateX(' + (-py * 8) + 'deg)';
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+  }
+
+const root = document.documentElement;
+  let theme = localStorage.getItem('kr-theme') || 'dark';
+  let accent = localStorage.getItem('kr-accent') || 'red';
+  let particles = localStorage.getItem('kr-particles') || 'on';
+  const fxKeys = ['kr-fx-stars', 'kr-fx-smoke', 'kr-fx-click', 'kr-fx-grain'];
+  function fxState(k){ try { return localStorage.getItem(k.replace('kr-fx-','kr-fx-') === k ? k : k) || 'on'; } catch(e){ return 'on'; } }
+
+  function apply(){ root.setAttribute('data-theme', theme); root.setAttribute('data-accent', accent); }
+  function markActive(){
+    document.querySelectorAll('[data-kind="theme"]').forEach((b) => b.classList.toggle('active', b.dataset.themeVal === theme));
+    document.querySelectorAll('[data-kind="accent"]').forEach((b) => b.classList.toggle('active', b.dataset.accentVal === accent));
+    document.querySelectorAll('[data-kind="particles"]').forEach((b) => b.classList.toggle('active', b.dataset.val === particles));
+    document.querySelectorAll('[data-kind^="fx-"]').forEach((b) => {
+      const v = (function(){ try { return localStorage.getItem('kr-' + b.dataset.kind) || 'on'; } catch(e){ return 'on'; } })();
+      b.classList.toggle('active', b.dataset.val === v);
+    });
+  }
+
+  document.querySelectorAll('[data-kind="theme"]').forEach((b) => {
+    b.addEventListener('click', () => { theme = b.dataset.themeVal; try { localStorage.setItem('kr-theme', theme); } catch(e){} apply(); markActive(); });
+  });
+  document.querySelectorAll('[data-kind="accent"]').forEach((b) => {
+    b.addEventListener('click', () => { accent = b.dataset.accentVal; try { localStorage.setItem('kr-accent', accent); } catch(e){} apply(); markActive(); });
+  });
+  document.querySelectorAll('[data-kind="particles"]').forEach((b) => {
+    b.addEventListener('click', () => { particles = b.dataset.val; try { localStorage.setItem('kr-particles', particles); } catch(e){} markActive(); });
+  });
+  document.querySelectorAll('[data-kind^="fx-"]').forEach((b) => {
+    b.addEventListener('click', () => { try { localStorage.setItem('kr-' + b.dataset.kind, b.dataset.val); } catch(e){} markActive(); applyFxVar(b.dataset.kind, b.dataset.val); });
+  });
+  const grainInt = document.getElementById('grainInt');
+  if (grainInt) {
+    try { grainInt.value = localStorage.getItem('kr-fx-grainInt') || '0.05'; } catch(e){}
+    grainInt.addEventListener('input', () => {
+      try { localStorage.setItem('kr-fx-grainInt', grainInt.value); } catch(e){}
+      applyFxVar('kr-fx-grainInt', grainInt.value);
+    });
+  }
+  const starsCount = document.getElementById('starsCount');
+  if (starsCount) {
+    try { starsCount.value = localStorage.getItem('kr-stars-count') || '60'; } catch(e){}
+    starsCount.addEventListener('input', () => { try { localStorage.setItem('kr-stars-count', starsCount.value); } catch(e){} });
+  }
+  const starsSpeed = document.getElementById('starsSpeed');
+  if (starsSpeed) {
+    try { starsSpeed.value = localStorage.getItem('kr-stars-speed') || '1'; } catch(e){}
+    starsSpeed.addEventListener('input', () => { try { localStorage.setItem('kr-stars-speed', starsSpeed.value); } catch(e){} });
+  }
+  const starsDir = document.getElementById('starsDir');
+  if (starsDir) {
+    try { starsDir.value = localStorage.getItem('kr-stars-dir') || 'down'; } catch(e){}
+    starsDir.addEventListener('change', () => { try { localStorage.setItem('kr-stars-dir', starsDir.value); } catch(e){} });
+  }
+  function applyFxVar(kind, val){
+    if (kind === 'kr-fx-grainInt' || kind === 'fx-grainInt') {
+      const o = parseFloat(val);
+      document.documentElement.style.setProperty('--fx-grain-o', isNaN(o) ? 0.05 : o);
+    }
+  }
+  // init grain intensity css var
+  applyFxVar('kr-fx-grainInt', (function(){ try { return localStorage.getItem('kr-fx-grainInt') || '0.05'; } catch(e){ return '0.05'; } })());
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    try { localStorage.removeItem('kr-theme'); localStorage.removeItem('kr-accent'); localStorage.removeItem('kr-particles'); localStorage.removeItem('kr-fx-stars'); localStorage.removeItem('kr-fx-smoke'); localStorage.removeItem('kr-fx-click'); localStorage.removeItem('kr-fx-grain'); localStorage.removeItem('kr-fx-grainInt'); } catch(e){}
+    theme = 'dark'; accent = 'red'; particles = 'on'; apply(); markActive();
+    applyFxVar('kr-fx-grainInt', '0.05');
+  });
+
+  function exportSettings() {
+    const keys = ['kr-theme','kr-accent','kr-particles','kr-fx-stars','kr-fx-smoke','kr-fx-click','kr-fx-grain','kr-fx-grainInt'];
+    const data = {};
+    keys.forEach((k) => { try { if (localStorage.getItem(k) !== null) data[k] = localStorage.getItem(k); } catch(e){} });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'killanderrry-settings.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+  }
+  const exportBtn = document.getElementById('exportBtn');
+  if (exportBtn) exportBtn.addEventListener('click', exportSettings);
+  const importFile = document.getElementById('importFile');
+  const importBtn = document.getElementById('importBtn');
+  if (importBtn) importBtn.addEventListener('click', () => { if (importFile) importFile.click(); });
+  if (importFile) importFile.addEventListener('change', () => {
+    const f = importFile.files && importFile.files[0];
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const data = JSON.parse(rd.result);
+        Object.keys(data).forEach((k) => { if (k.indexOf('kr-') === 0) { try { localStorage.setItem(k, data[k]); } catch(e){} } });
+        theme = localStorage.getItem('kr-theme') || 'dark'; accent = localStorage.getItem('kr-accent') || 'red'; particles = localStorage.getItem('kr-particles') || 'on';
+        apply(); markActive();
+        applyFxVar('kr-fx-grainInt', (function(){ try { return localStorage.getItem('kr-fx-grainInt') || '0.05'; } catch(e){ return '0.05'; } })());
+      } catch (e) { alert('Не удалось импортировать настройки: файл повреждён'); }
+    };
+    rd.readAsText(f);
+    importFile.value = '';
+  });
+
+  markActive();
+</script>
+
+<script>
+(function(){var el=document.getElementById('scrollProg');if(!el)return;function upd(){var h=document.documentElement;var s=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight||1);el.style.width=Math.min(100,Math.max(0,s*100))+'%';}window.addEventListener('scroll',upd,{passive:true});upd();})();
+</script>
+<script>
+(function(){var l=document.getElementById('pageLoader');if(!l)return;window.addEventListener('load',function(){setTimeout(function(){l.classList.add('hide');setTimeout(function(){l.remove();},500);},250);});setTimeout(function(){l.classList.add('hide');setTimeout(function(){l.remove();},500);},3500);})();
+</script>
+<script src="site-effects.js"></script>
+<script src="site-vfx.js"></script>
+</body>
+</html>

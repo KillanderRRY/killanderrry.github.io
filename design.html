@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дизайн сайтов — KillanderRRY</title>
+<meta name="description" content="Дизайн и помощь с сайтами — KillanderRRY.">
+<style>
+  :root{
+    --bg:#0c0a14;--bg-2:#120f1a;--card:#181224;--card-2:#201a30;
+    --pur:#a855f7;--pur-2:#c084fc;--text:#f4f0ff;--muted:#a99fc4;--border:#2c2550;
+    --radius:14px;--a:168,85,247;--a2:192,132,252;--nav-rgb:12,10,20;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:70px}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;position:relative}
+  /* Фон: градиент + абстракция-волны */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:
+    radial-gradient(700px 400px at 15% -5%,rgba(var(--a),.25),transparent 60%),
+    radial-gradient(600px 420px at 90% 10%,rgba(var(--a),.18),transparent 62%),
+    radial-gradient(800px 500px at 50% 110%,rgba(var(--a),.16),transparent 60%)}
+  .waves{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  .waves svg{width:100%;height:100%;display:block}
+  main,header{position:relative;z-index:2}
+  /* Фиолетовый курсор: точка + пунктирная рамка (59) */
+  body{cursor:none}
+  a,button,.click{cursor:none}
+  .c-dot{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;background:var(--pur);box-shadow:0 0 14px rgba(var(--a),1);pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+  .c-dot.hov{background:var(--pur-2)}
+  .c-ring{position:fixed;top:0;left:0;width:26px;height:26px;border:1.5px dashed rgba(var(--a),.8);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;opacity:.6}
+  .c-ring.hov{width:44px;height:44px;opacity:1;border-style:solid}
+  @media (hover:none),(pointer:coarse){ body,a,button{cursor:auto} .c-dot,.c-ring{display:none} }
+  .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.35) 100%)}
+  .fx-particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+  .container{width:min(1040px,92%);margin:0 auto}
+  header{position:sticky;top:0;z-index:50;background:rgba(var(--nav-rgb),.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .logo{font-weight:800;text-decoration:none;letter-spacing:.5px;color:var(--pur)}
+  .logo .r{color:#e0b3ff;text-shadow:0 0 12px rgba(var(--a2),.95)}
+  .nav-links{display:flex;gap:16px;list-style:none}
+  .nav-links a{color:var(--muted);text-decoration:none;font-weight:600;font-size:.9rem;transition:color .2s}
+  .nav-links a:hover{color:var(--pur-2)}
+  main{padding:20px 0 80px}
+  .hero{position:relative;padding:64px 0 30px;max-width:720px}
+  .eyebrow{color:var(--pur-2);font-size:.76rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  h1{font-size:clamp(2rem,5.5vw,3.4rem);font-weight:900;margin:14px 0;line-height:1.08}
+  .tw-caret{display:inline-block;width:3px;height:.95em;background:var(--pur-2);vertical-align:-0.12em;animation:twB .8s steps(1) infinite;margin-left:3px}
+  @keyframes twB{50%{opacity:0}}
+  .lead{color:var(--muted);font-size:1.05rem;max-width:54ch}
+  .contact-strip{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;padding:14px 18px;background:rgba(var(--a),.1);border:1px solid rgba(var(--a),.35);border-radius:12px}
+  .contact-strip b{color:var(--pur-2)}
+  .status-pill{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;font-weight:700;color:#fff;padding:6px 12px;border-radius:999px}
+  .status-pill .dot{width:8px;height:8px;border-radius:50%;animation:stPulse 1.6s ease-in-out infinite}
+  .status-pill.open{background:rgba(34,197,94,.2);color:#4ade80;border:1px solid rgba(34,197,94,.5)}
+  .status-pill.open .dot{background:#22c55e}
+  .status-pill.closed{background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.45)}
+  .status-pill.closed .dot{background:#ef4444;animation:none}
+  .status-pill.break{background:rgba(234,179,8,.18);color:#facc15;border:1px solid rgba(234,179,8,.45)}
+  .status-pill.break .dot{background:#eab308}
+  @keyframes stPulse{50%{opacity:.4}}
+  .counters{display:flex;gap:22px;flex-wrap:wrap;margin-top:34px}
+  .counter{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;min-width:130px;text-align:center}
+  .counter .num{font-size:1.9rem;font-weight:900;color:var(--pur-2)}
+  .counter .lab{color:var(--muted);font-size:.8rem;margin-top:4px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:transform .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-5px);box-shadow:0 22px 50px rgba(var(--a),.22),0 0 0 1px rgba(var(--a),.4);border-color:rgba(var(--a),.5)}
+  .card .ic{font-size:2rem}
+  .card h3{font-size:1.1rem;font-weight:800;margin:12px 0 6px}
+  .card p{color:var(--muted);font-size:.9rem}
+  .section{padding:56px 0 10px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+  .sec-head .k{color:var(--pur);font-weight:900;font-size:1.6rem}
+  .sec-head h2{font-size:1.5rem;font-weight:900}
+  .sec-head .line{flex:1;height:1px;background:linear-gradient(90deg,rgba(var(--a),.5),transparent)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  /* Портфолио */
+  .case{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:.25s}
+  .case:hover{transform:translateY(-4px);border-color:rgba(var(--a),.5)}
+  .case .shot{height:120px;background:linear-gradient(135deg,#241b3d,#120b24);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;position:relative}
+  .case .shot .wm{position:absolute;font-weight:900;color:rgba(var(--a),.16);font-size:2rem}
+  .case .b{padding:14px}
+  .case .b h3{font-size:1rem;font-weight:800}
+  .case .b p{color:var(--muted);font-size:.82rem;margin-top:4px}
+  /* Этапы */
+  .steps{display:flex;flex-direction:column;gap:0;max-width:640px}
+  .step{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);position:relative}
+  .step:last-child{border:none}
+  .step .n{width:34px;height:34px;border-radius:50%;background:rgba(var(--a),.16);border:1px solid rgba(var(--a),.5);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--pur-2);flex-shrink:0}
+  .step b{display:block}
+  .step span{color:var(--muted);font-size:.88rem}
+  /* Отзывы */
+  .review{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+  .review .q{color:var(--muted);font-style:italic;font-size:.92rem}
+  .review .a{margin-top:10px;font-weight:700;font-size:.85rem;color:var(--pur-2)}
+  /* FAQ */
+  details.faq{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+  details.faq summary{cursor:pointer;list-style:none;padding:16px 20px;font-weight:700}
+  details.faq summary::-webkit-details-marker{display:none}
+  details.faq .ans{padding:0 20px 16px;color:var(--muted);font-size:.9rem}
+  details.faq summary::after{content:"+";float:right;color:var(--pur-2);font-size:1.3rem}
+  details.faq[open] summary::after{transform:rotate(45deg)}
+  /* Кнопка-неон */
+  .btn-neon{display:inline-block;margin-top:18px;padding:13px 26px;border-radius:12px;background:linear-gradient(135deg,var(--pur),var(--pur-2));color:#120b24;font-weight:800;text-decoration:none;box-shadow:0 0 22px rgba(var(--a),.6),0 8px 26px rgba(var(--a),.35);transition:.25s}
+  .btn-neon:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(var(--a),.9),0 12px 34px rgba(var(--a),.45)}
+  .watermark{position:fixed;right:-40px;bottom:-30px;z-index:0;pointer-events:none;font-size:9rem;font-weight:900;color:rgba(var(--a),.05);user-select:none}
+  .quote-block{margin-top:30px;padding:22px 26px;border-left:3px solid var(--pur);background:rgba(var(--a),.08);border-radius:0 12px 12px 0;font-style:italic;color:var(--muted)}
+  .badge-ai{display:inline-block;margin-left:10px;font-size:.68rem;font-weight:800;color:var(--pur-2);background:rgba(var(--a),.14);border:1px solid rgba(var(--a),.5);padding:3px 9px;border-radius:999px;vertical-align:middle}
+  .to-top{position:fixed;right:20px;bottom:20px;z-index:60;width:46px;height:46px;border-radius:50%;border:1px solid rgba(var(--a),.5);background:rgba(var(--nav-rgb),.8);color:var(--pur-2);cursor:pointer;font-size:1.3rem;opacity:0;visibility:hidden;transform:translateY(12px);transition:.3s}
+  .to-top.show{opacity:1;visibility:visible;transform:none}
+  .to-top:hover{background:linear-gradient(135deg,var(--pur),var(--pur-2));color:#120b24}
+  ::-webkit-scrollbar{width:11px}
+  ::-webkit-scrollbar-track{background:var(--bg-2)}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--pur),var(--pur-2));border-radius:8px;border:2px solid var(--bg-2)}
+  ::selection{background:rgba(var(--a),.5);color:#fff}
+  .mascot{position:fixed;right:26px;bottom:90px;z-index:59;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--pur),#6d28d9);display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 10px 30px rgba(var(--a),.5);animation:mascotFloat 4s ease-in-out infinite;pointer-events:auto;cursor:pointer}
+  .mascot:hover{animation-play-state:paused;transform:scale(1.12)}
+  @keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .confetti{position:fixed;inset:0;z-index:97;pointer-events:none}
+  .confetti span{position:absolute;width:9px;height:9px;border-radius:2px;animation:confF .9s ease-out forwards}
+  @keyframes confF{0%{opacity:1;transform:scale(1) rotate(0)}100%{transform:translate(var(--dx),var(--dy)) scale(.3) rotate(540deg);opacity:0}}
+  footer{margin-top:50px;padding:24px 0;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;text-align:center;position:relative;z-index:2}
+  @media (max-width:560px){ .nav-links{gap:10px;font-size:.8rem} .counters{gap:12px} }
+
+  /* ===== Новые визуалы ===== */
+  /* 2. Дрейф тумана (фон) */
+  .drift-fog{position:fixed;inset:-120px;z-index:0;pointer-events:none;opacity:.5}
+  .drift-fog span{position:absolute;border-radius:50%;filter:blur(70px);background:radial-gradient(circle,rgba(var(--a),.45),transparent 70%);animation:fogDrift 40s ease-in-out infinite alternate}
+  .drift-fog .f1{width:500px;height:500px;top:5%;left:-6%}
+  .drift-fog .f2{width:420px;height:420px;bottom:4%;right:-4%;animation-delay:-14s}
+  @keyframes fogDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(90px,-50px) scale(1.18)}}
+  /* 7. Свечение рамок секций при ховере */
+  .sec-head:hover .line{background:linear-gradient(90deg,rgba(var(--a2),.9),transparent);box-shadow:0 0 12px rgba(var(--a),.7)}
+  .sec-head{transition:.3s}
+  /* 5. Word-reveal: слово-по-слову */
+  .wr span{display:inline-block;overflow:hidden;vertical-align:bottom}
+  .wr span i{display:inline-block;font-style:normal;transform:translateY(110%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .wr.in span i{transform:none}
+  /* 6. Прогресс-бар в шапке */
+  .rprogress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--pur),var(--pur-2));box-shadow:0 0 10px rgba(var(--a),.8)}
+  /* 4. Ховер-подсветка меню волной */
+  .nav-links a{position:relative}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-2px;width:100%;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--pur),var(--pur-2));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  /* 1. Шлейф за курсором */
+  .ctrail{position:fixed;inset:0;z-index:9997;pointer-events:none}
+  /* 3. Эхо-волна по карточкам */
+  .card,.case{overflow:hidden}
+  .ecircle{position:absolute;width:0;height:0;border-radius:50%;background:rgba(var(--a),.15);transform:translate(-50%,-50%);opacity:.6;pointer-events:none}
+  .card:active .ecircle,.case:active .ecircle{animation:echoGrow .5s ease-out forwards}
+  @keyframes echoGrow{to{width:340px;height:340px;opacity:0}}
+  .card{position:relative}
+</style>
+</head>
+<body>
+<div class="vignette"></div>
+<div class="drift-fog" aria-hidden="true"><span class="f1"></span><span class="f2"></span></div>
+<canvas class="ctrail" id="ctrail"></canvas>
+<div class="rprogress" id="rprogress" aria-hidden="true"></div>
+<div class="waves" aria-hidden="true"><svg viewBox="0 0 1440 500" preserveAspectRatio="none"><path fill="rgba(168,85,247,.06)" d="M0,300 C300,120 600,420 900,280 C1200,140 1400,320 1440,260 L1440,500 L0,500 Z"></path></svg></div>
+<canvas class="fx-particles" id="particles"></canvas>
+<div class="watermark" aria-hidden="true">K</div>
+<div class="c-dot" id="cdot"></div>
+<div class="c-ring" id="cring"></div>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo">Killander<span class="r">RRY</span></a>
+      <ul class="nav-links">
+        <li><a href="#services">Услуги</a></li>
+        <li><a href="#portfolio">Портфолио</a></li>
+        <li><a href="#steps">Этапы</a></li>
+        <li><a href="#faq">Вопросы</a></li>
+        <li><a href="settings.html">Настройки</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <section class="hero">
+      <span class="eyebrow">Дизайн сайтов</span>
+      <h1><span class="tw" data-text="Делаю и помогаю с дизайном сайтов"></span></h1>
+      <p class="lead">Собираю стильные и удобные страницы, помогаю с оформлением. Если нужен сайт — заходи.</p>
+      <div class="contact-strip">
+        <span>Контакты:</span> <b>Discord: abr000bus</b>
+      </div>
+      <div class="counters">
+        <div class="counter"><div class="num count-up" data-to="0">0</div><div class="lab">проектов сделано</div></div>
+        <div class="counter"><div class="num">0</div><div class="lab">проекта в работе</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="sec-head reveal"><div class="k">01</div><h2 class="wr">Услуги</h2><div class="line"></div></div>
+      <div class="grid2">
+        <div class="card reveal" data-spot><div class="ic">🎨</div><h3>Дизайн под ключ</h3><p>Сделаю оформление по твоей идее.</p></div>
+        <div class="card reveal" data-spot><div class="ic">🛠️</div><h3>Помощь с сайтом</h3><p>Помогу доработать: правки, стиль, фиксы, советы.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="portfolio">
+      <div class="sec-head reveal"><div class="k">02</div><h2>Портфолио</h2><div class="line"></div></div>
+      <div class="grid3">
+        <div class="case"><div class="shot"><span class="wm">1</span>скоро</div><div class="b"><h3>Проект 1</h3><p>Добавлю сюда твой сайт.</p></div></div>
+        <div class="case"><div class="shot"><span class="wm">2</span>скоро</div><div class="b"><h3>Проект 2</h3><p>Место под следующий кейс.</p></div></div>
+        <div class="case"><div class="shot"><span class="wm">3</span>скоро</div><div class="b"><h3>Проект 3</h3><p>И сюда тоже.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="steps">
+      <div class="sec-head reveal"><div class="k">03</div><h2>Этапы работы</h2><div class="line"></div></div>
+      <div class="steps">
+        <div class="step reveal"><div class="n">1</div><div><b>Идея и ТЗ</b><span>Обсуждаем, что нужно, собираем требования.</span></div></div>
+        <div class="step reveal"><div class="n">2</div><div><b>Макет дизайна</b><span>Цвета, шрифты, структура страницы.</span></div></div>
+        <div class="step reveal"><div class="n">3</div><div><b>Сборка</b><span>Делаю страницу: код, анимации, адаптив.</span></div></div>
+        <div class="step reveal"><div class="n">4</div><div><b>Запуск и правки</b><span>Публикация и доработка по фидбеку.</span></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="sec-head reveal"><div class="k">05</div><h2>Вопросы</h2><div class="line"></div></div>
+      <div class="reveal">
+        <details class="faq"><summary>Сколько стоит?</summary><div class="ans">Зависит от задачи — обсудим в Discord и посчитаем.</div></details>
+        <details class="faq"><summary>Сколько по времени?</summary><div class="ans">От пары дней до пары недель, в зависимости от объёма.</div></details>
+        <details class="faq"><summary>Что нужен от меня?</summary><div class="ans">Идея и примеры того, что нравится. Остальное сделаю сам.</div></details>
+</div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head reveal"><div class="k">07</div><h2 class="wr">Orbit</h2><div class="line"></div></div>
+      <div class="reveal" style="text-align:center">
+        <canvas id="planet3d" width="420" height="420" style="max-width:100%"></canvas>
+        <div style="color:var(--muted);font-size:.8rem;margin-top:6px">3D-планета на орбите</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head reveal"><div class="k">08</div><h2 class="wr">Isogrid</h2><div class="line"></div></div>
+      <div class="reveal" style="text-align:center">
+        <canvas id="city3d" width="460" height="360" style="max-width:100%"></canvas>
+        <div style="color:var(--muted);font-size:.8rem;margin-top:6px">Изометрический городок</div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<button class="to-top" id="toTop" aria-label="Наверх">↑</button>
+
+<footer>© KillanderRRY · дизайн сайтов · <a href="index.html" style="color:var(--pur-2)">главная</a></footer>
+
+<script>
+/* Фон-частицы (26), лёгкие */
+var pcv=document.getElementById('particles'),pctx=pcv.getContext('2d'),dpr=Math.min(devicePixelRatio||1,2);
+var parts=[];
+function pResize(){ pcv.width=innerWidth*dpr; pcv.height=innerHeight*dpr; var n=Math.min(40,Math.floor(innerWidth/30)); parts=Array.from({length:n},function(){return{x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:.5+Math.random()*1.6,s:.05+Math.random()*.2,a:.1+Math.random()*.3,ph:Math.random()*Math.PI*2};}); }
+pResize(); addEventListener('resize',pResize);
+(function pLoop(){ pctx.setTransform(dpr,0,0,dpr,0,0); pctx.clearRect(0,0,innerWidth,innerHeight); parts.forEach(function(p){ p.y-=p.s; if(p.y<-6){p.y=innerHeight+6;p.x=Math.random()*innerWidth;} pctx.beginPath(); pctx.fillStyle='rgba(168,85,247,'+(p.a*(.6+.4*Math.sin(performance.now()/900+p.ph)))+')'; pctx.arc(p.x,p.y,p.r,0,Math.PI*2); pctx.fill(); }); requestAnimationFrame(pLoop); })();
+
+/* Курсор-точка + пунктирная рамка */
+var dot=document.getElementById('cdot'),ring=document.getElementById('cring'),mx=-100,my=-100,rx=-100,ry=-100;
+addEventListener('mousemove',function(e){ mx=e.clientX;my=e.clientY; var h=!!e.target.closest('a,button,.card,.case,.mascot,.click'); dot.classList.toggle('hov',h); ring.classList.toggle('hov',h); },{passive:true});
+(function rLoop(){ rx+=(mx-rx)*.2; ry+=(my-ry)*.2; dot.style.transform='translate('+mx+'px,'+my+'px) translate(-50%,-50%)'; ring.style.transform='translate('+rx+'px,'+ry+'px) translate(-50%,-50%)'; requestAnimationFrame(rLoop); })();
+
+/* Typewriter */
+var tw=document.querySelector('.tw'); if(tw){ var txt=tw.getAttribute('data-text'),i=0,caret=document.createElement('span'); caret.className='tw-caret'; tw.appendChild(caret); (function type(){ if(i<=txt.length){ tw.firstChild?tw.firstChild.nodeValue=txt.slice(0,i):tw.insertBefore(document.createTextNode(''),caret); } i++; if(i<=txt.length) setTimeout(type,28); })(); }
+
+/* Reveal на скролле */
+var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.12});
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+/* Счётчики */
+var cio=new IntersectionObserver(function(es){ es.forEach(function(e){ if(!e.isIntersecting||e.target.dataset.done)return; e.target.dataset.done=1; var to=parseFloat(e.target.dataset.to)||0,t0=performance.now(); (function tk(t){ var k=Math.min(1,(t-t0)/1200),ev=1-Math.pow(1-k,3); e.target.textContent=Math.round(to*ev); if(k<1)requestAnimationFrame(tk); else e.target.textContent=to; })(t0); cio.unobserve(e.target); }); },{threshold:.4});
+document.querySelectorAll('.count-up').forEach(function(el){ cio.observe(el); });
+
+/* Кнопка наверх */
+var tt=document.getElementById('toTop'); tt.addEventListener('click',function(){ scrollTo({top:0,behavior:'smooth'}); }); addEventListener('scroll',function(){ tt.classList.toggle('show',(scrollY||0)>400); },{passive:true});
+
+/* 1. Шлейф за курсором (канва) */
+var tcv=document.getElementById('ctrail'),tcx=tcv.getContext('2d'),tdpr=Math.min(devicePixelRatio||1,2);
+function tResize(){ tcv.width=innerWidth*tdpr; tcv.height=innerHeight*tdpr; }
+tResize(); addEventListener('resize',tResize);
+var tp=[],tlx=-999,tly=-999;
+addEventListener('mousemove',function(e){ var dx=e.clientX-tlx,dy=e.clientY-tly; if(dx*dx+dy*dy>3){ tp.push({x:e.clientX,y:e.clientY,a:.5}); tlx=e.clientX;tly=e.clientY; } if(tp.length>22)tp.shift(); },{passive:true});
+(function tLoop(){ tcx.setTransform(tdpr,0,0,tdpr,0,0); tcx.clearRect(0,0,innerWidth,innerHeight); tp.forEach(function(p){ tcx.globalAlpha=p.a; tcx.fillStyle='rgba(168,85,247,.8)'; tcx.beginPath(); tcx.arc(p.x,p.y,3,0,Math.PI*2); tcx.fill(); p.a*=.9; }); tcx.globalAlpha=1; requestAnimationFrame(tLoop); })();
+
+/* 3. Эхо-волна по карточкам при клике */
+document.querySelectorAll('.card,.case').forEach(function(el){
+  el.addEventListener('click',function(e){
+    var r=el.getBoundingClientRect(); var c=document.createElement('span'); c.className='ecircle';
+    c.style.left=(e.clientX-r.left)+'px'; c.style.top=(e.clientY-r.top)+'px';
+    el.appendChild(c); setTimeout(function(){ if(c.parentNode)c.parentNode.removeChild(c); },520);
+  });
+});
+
+/* 5. Word-reveal для секционных заголовков */
+var wio=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); wio.unobserve(e.target); } }); },{threshold:.4});
+document.querySelectorAll('.wr').forEach(function(el){ if(!el.dataset.built){ var words=el.textContent.trim().split(' '); el.innerHTML=words.map(function(w){ return '<span><i>'+w+'</i></span>'; }).join(' '); el.dataset.built=1; } wio.observe(el); });
+
+/* 6. Прогресс-бар в шапке */
+var rp=document.getElementById('rprogress');
+addEventListener('scroll',function(){ var h=document.documentElement; var s=(h.scrollTop||0)/(h.scrollHeight-h.clientHeight||1); rp.style.width=Math.min(100,s*100)+'%'; },{passive:true});
+
+/* Конфетти */
+function burst(){ var hv=document.createElement('div'); hv.className='confetti'; document.body.appendChild(hv); for(var i=0;i<40;i++){ var s=document.createElement('span'); var dx=(Math.random()*160-80),dy=(Math.random()*-120); s.style.left=(innerWidth/2)+'px'; s.style.top=(innerHeight/3)+'px'; s.style.background=['#a855f7','#c084fc','#e0b3ff','#6d28d9'][i%4]; s.style.setProperty('--dx',dx+'px'); s.style.setProperty('--dy',dy+'px'); hv.appendChild(s); } setTimeout(function(){ if(hv.parentNode)hv.parentNode.removeChild(hv); },950); }
+
+/* 3D-планета на орбите (вращение мышью) */
+(function(){
+  var cv=document.getElementById('planet3d'); if(!cv) return;
+  var g=cv.getContext('2d'), R=110, orb=150, ang=0, ax=0.4, yaw=0, pitch=0.7, drag=false, lx=0, ly=0;
+  cv.addEventListener('mousedown',function(e){ drag=true; lx=e.clientX; ly=e.clientY; });
+  addEventListener('mouseup',function(){ drag=false; });
+  cv.addEventListener('mousemove',function(e){ if(!drag)return; yaw+=(e.clientX-lx)*0.012; pitch+=(e.clientY-ly)*0.012; pitch=Math.max(0.1,Math.min(1.4,pitch)); lx=e.clientX; ly=e.clientY; });
+  function pt(rad,theta,phi){ return [ rad*Math.sin(phi)*Math.cos(theta), rad*Math.cos(phi), rad*Math.sin(phi)*Math.sin(theta) ]; }
+  // 3D вращение: yaw вокруг Y, pitch вокруг X
+  function proj3(v){
+    var cx=Math.cos(pitch),sx=Math.sin(pitch),cy=Math.cos(yaw),sy=Math.sin(yaw);
+    var x1=v[0]*cy+v[2]*sy, z1=-v[0]*sy+v[2]*cy, y1=v[1];
+    var y2=y1*cx-z1*sx, z2=y1*sx+z1*cx;
+    return [cv.width/2+x1, cv.height/2 - z2, y2];
+  }
+  (function loop(){
+    ang+=0.012; // авто-орбита спутника
+    g.clearRect(0,0,cv.width,cv.height);
+    g.strokeStyle='rgba(168,85,247,.3)'; g.lineWidth=2;
+    g.beginPath(); g.ellipse(cv.width/2, cv.height/2, orb, orb*0.55, 0, 0, Math.PI*2); g.stroke();
+    var ox=cv.width/2+Math.cos(ang)*orb, oy=cv.height/2-Math.sin(ang)*orb*0.55;
+    for(var lat=0; lat<=8; lat++){
+      var phi=Math.PI*lat/8;
+      g.beginPath();
+      for(var th=0; th<=32; th++){
+        var v=pt(R, th/32*Math.PI*2, phi), p=proj3(v);
+        th? g.lineTo(p[0],p[1]) : g.moveTo(p[0],p[1]);
+      }
+      g.strokeStyle='rgba(192,132,252,.5)'; g.lineWidth=1; g.stroke();
+    }
+    for(var mer=0; mer<=12; mer++){
+      g.beginPath();
+      for(var la=0; la<=16; la++){
+        var v=pt(R, mer/12*Math.PI*2, Math.PI*la/16), p=proj3(v);
+        la? g.lineTo(p[0],p[1]) : g.moveTo(p[0],p[1]);
+      }
+      g.strokeStyle='rgba(192,132,252,.35)'; g.stroke();
+    }
+    g.fillStyle='rgba(168,85,247,.15)'; g.beginPath(); g.arc(cv.width/2, cv.height/2, R, 0, Math.PI*2); g.fill();
+    g.fillStyle='#e0b3ff'; g.beginPath(); g.arc(ox,oy,5,0,Math.PI*2); g.fill();
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* Изометрический мини-городок (центрирован, вращение мышью) */
+(function(){
+  var cv=document.getElementById('city3d'); if(!cv) return;
+  var g=cv.getContext('2d'), W=cv.width, H=cv.height;
+  var TW=44, TH=22, height=46;
+  // сетка зданий: 5x5
+  var map=[];
+  for(var r=0;r<5;r++){ map[r]=[]; for(var c=0;c<5;c++){ map[r][c]= (c===2&&r===2)? 3 : (0|Math.random()*2)? 2+ (0|((r*7+c*13)%3)) : 1; } }
+  var rot=0, drag=false, lx=0;
+  cv.addEventListener('mousedown',function(e){ drag=true; lx=e.clientX; });
+  addEventListener('mouseup',function(){ drag=false; });
+  cv.addEventListener('mousemove',function(e){ if(drag){ rot+=(e.clientX-lx)*0.005; lx=e.clientX; } });
+  // изометрическое преобразование с поворотом сетки и центрированием
+  // Сетка 5x5, центр — клетка (2,2). Рисуем от точки; чтобы ВИЗУАЛЬНЫЙ центр города попал в центр холста,
+// используем подбор коррекции (hShift, vShift) — уточнено замером.
+  var cx0=2, cy0=2;
+  var hShift = -22, vShift = 81;
+  function iso(gx,gy){
+    var cs=Math.cos(rot), sn=Math.sin(rot);
+    var rx=(gx-cy0)*cs-(gy-cx0)*sn, ry=(gx-cy0)*sn+(gy-cx0)*cs;
+    var px=(rx-ry)*TW*0.5, py=(rx+ry)*TH*0.5;
+    return { px: W/2 + px + hShift, py: H*0.5 + py + vShift };
+  }
+  (function loop(){
+    g.clearRect(0,0,W,H);
+    g.fillStyle='rgba(168,85,247,.06)'; g.fillRect(0,0,W,H);
+    // рисуем в порядке от дальних к ближним по глубине (rx+ry)
+    var cells=[];
+    for(var r=0;r<5;r++)for(var c=0;c<5;c++) cells.push({r:r,c:c,depth:c+r});
+    cells.sort(function(a,b){ return a.depth-b.depth; });
+    cells.forEach(function(cc){
+      var r=cc.r,c=cc.c, p=iso(c,r), h=height*map[r][c];
+      // тень под ножкой
+      g.fillStyle='rgba(0,0,0,.3)';
+      g.beginPath(); g.moveTo(p.px+TW*0.5,p.py-h-2); g.lineTo(p.px+TW,p.py-TH*0.5-2); g.lineTo(p.px+TW*0.5,p.py-2); g.fill();
+      // верх
+      g.fillStyle=map[r][c]>=3?'#c084fc':'#a855f7';
+      g.beginPath(); g.moveTo(p.px,p.py-h); g.lineTo(p.px+TW*0.5,p.py-TH*0.5-h); g.lineTo(p.px+TW,p.py-h); g.lineTo(p.px+TW*0.5,p.py+TH*0.5-h); g.closePath(); g.fill();
+      // левая грань
+      g.fillStyle=map[r][c]>=3?'rgba(150,90,220,.9)':'rgba(130,60,190,.9)';
+      g.beginPath(); g.moveTo(p.px,p.py-h); g.lineTo(p.px+TW*0.5,p.py+TH*0.5-h); g.lineTo(p.px+TW*0.5,p.py+TH*0.5); g.lineTo(p.px,p.py); g.closePath(); g.fill();
+      // правая грань
+      g.fillStyle=map[r][c]>=3?'rgba(120,70,200,.9)':'rgba(100,45,165,.9)';
+      g.beginPath(); g.moveTo(p.px+TW*0.5,p.py+TH*0.5-h); g.lineTo(p.px+TW,p.py-h); g.lineTo(p.px+TW,p.py); g.lineTo(p.px+TW*0.5,p.py+TH*0.5); g.closePath(); g.fill();
+      // контур
+      g.strokeStyle='rgba(224,179,255,.25)'; g.lineWidth=1;
+      g.beginPath(); g.moveTo(p.px,p.py-h); g.lineTo(p.px+TW*0.5,p.py-TH*0.5-h); g.lineTo(p.px+TW,p.py-h); g.lineTo(p.px+TW,p.py); g.lineTo(p.px+TW*0.5,p.py+TH*0.5); g.lineTo(p.px,p.py); g.closePath(); g.stroke();
+    });
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
+<script src="site-vfx.js"></script>
+</body>
+</html>

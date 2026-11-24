@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belka OS</title>
+<meta name="description" content="Симулятор операционной системы Belka OS — змейка, фейк-интернет, антивирус.">
+<style>
+  :root{
+    --os-bg:#0c1220;--os-bar:#0a0f1a;--os-card:#161f33;--os-border:#26354f;
+    --os-text:#e6ecf5;--os-muted:#93a3bd;--os-red:#e11d2e;--os-blue:#3b82f6;
+    --os-green:#22c55e;--os-yellow:#eab308;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,sans-serif;background:#05070d;color:var(--os-text);overflow:hidden;height:100vh;user-select:none}
+  .os-shell{display:flex;flex-direction:column;height:100vh}
+  /* Панель задач */
+  .taskbar{height:52px;background:var(--os-bar);border-top:1px solid var(--os-border);display:flex;align-items:center;gap:6px;padding:0 10px;flex-shrink:0}
+  .tb-logo{font-weight:900;color:var(--os-blue);font-size:1.05rem;margin-right:12px;letter-spacing:.5px}
+  .tb-app{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid transparent;color:var(--os-muted);padding:6px 12px;border-radius:9px;cursor:pointer;font-size:.85rem;font-family:inherit;transition:.15s}
+  .tb-app:hover{background:rgba(255,255,255,.05);color:var(--os-text)}
+  .tb-app.on{background:rgba(59,130,246,.15);color:var(--os-text);border-color:rgba(59,130,246,.35)}
+  .tb-clock{margin-left:auto;color:var(--os-muted);font-size:.8rem;padding:0 8px}
+  /* Рабочий стол */
+  .desktop{flex:1;position:relative;overflow:hidden;background:
+    radial-gradient(900px 500px at 20% -10%,rgba(59,130,246,.18),transparent 60%),
+    radial-gradient(700px 400px at 85% 110%,rgba(30,41,59,.6),transparent 60%),
+    linear-gradient(160deg,#101a2e,#0b1120)}
+  .desktop-icons{position:absolute;top:16px;left:16px;display:flex;flex-direction:column;gap:14px}
+  .dicon{display:flex;flex-direction:column;align-items:center;gap:6px;width:88px;padding:8px;border-radius:10px;cursor:pointer;color:var(--os-text);font-size:.74rem;text-align:center;transition:.15s;border:1px solid transparent}
+  .dicon:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.1)}
+  .dicon .ic{font-size:1.7rem;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+  /* Окна */
+  .win{position:absolute;display:none;flex-direction:column;background:var(--os-card);border:1px solid var(--os-border);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.55);overflow:hidden;min-width:320px}
+  .win.show{display:flex}
+  .win.act{border-color:rgba(59,130,246,.55)}
+  .win-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(0,0,0,.25);cursor:move;flex-shrink:0}
+  .win-head .t{font-weight:700;font-size:.85rem;flex:1}
+  .win-x{background:none;border:none;color:var(--os-muted);font-size:1rem;cursor:pointer;padding:0 4px;border-radius:6px;font-family:inherit}
+  .win-x:hover{color:#fff;background:var(--os-red)}
+  .win-body{padding:16px;overflow:auto;flex:1;position:relative}
+  /* Boot screen */
+  .boot{position:fixed;inset:0;z-index:90;background:#05070d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+  .boot .logo{font-size:3rem;font-weight:900;color:var(--os-blue);letter-spacing:1px}
+  .boot .bar{width:220px;height:6px;background:#1a2740;border-radius:6px;overflow:hidden}
+  .boot .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--os-blue),#60a5fa);animation:bootload 2.4s ease forwards}
+  .boot .tip{color:var(--os-muted);font-size:.8rem}
+  @keyframes bootload{to{width:100%}}
+  .boot.hide{opacity:0;pointer-events:none;transition:opacity .4s}
+  /* Змейка */
+  #snakeWrap{position:relative}
+  #snakeCv{display:block;background:#0b1220;border:1px solid var(--os-border);border-radius:10px;width:100%}
+  .snake-hud{display:flex;justify-content:space-between;margin-bottom:10px;font-size:.85rem;color:var(--os-muted)}
+  .snake-hud b{color:var(--os-text)}
+  .snake-ctrl{display:flex;gap:8px;margin-top:10px;justify-content:center;flex-wrap:wrap}
+  .snake-ctrl kbd{background:#0b1220;border:1px solid var(--os-border);border-radius:8px;padding:6px 12px;font-size:.8rem;color:var(--os-muted)}
+  /* Браузер Belkapo */
+  .browser-bar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+  .addr{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--os-border);border-radius:8px;padding:8px 12px;font-size:.82rem;color:#fff;font-family:monospace}
+  .browser-pages .page{display:none;padding:10px;min-height:200px}
+  .browser-pages .page.show{display:block}
+  .browser-pages a{color:var(--os-blue);cursor:pointer}
+  /* Магазин */
+  .store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .app-card{background:rgba(0,0,0,.2);border:1px solid var(--os-border);border-radius:12px;padding:16px;text-align:center}
+  .app-card .ic{font-size:2rem}
+  .app-card .nm{font-weight:700;margin:8px 0 4px}
+  .app-card .ds{font-size:.76rem;color:var(--os-muted)}
+  .app-card button{margin-top:10px;background:var(--os-blue);border:none;color:#fff;border-radius:8px;padding:7px 14px;cursor:pointer;font-family:inherit}
+  .app-card button.got{background:var(--os-green)}
+  /* WHelper */
+  .wh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  .wh-btn{display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.2);border:1px solid var(--os-border);border-radius:10px;padding:12px;cursor:pointer;font-family:inherit;color:var(--os-text);text-align:left;transition:.15s}
+  .wh-btn:hover{border-color:var(--os-blue);background:rgba(59,130,246,.08)}
+  .wh-btn .ic{font-size:1.3rem}
+  .wh-btn .tt{font-size:.82rem;font-weight:600}
+  .wh-out{margin-top:14px;background:rgba(0,0,0,.3);border:1px solid var(--os-border);border-radius:10px;padding:12px;font-family:Consolas,monospace;font-size:.8rem;color:var(--os-green);white-space:pre-wrap;max-height:180px;overflow:auto}
+  /* Уведомления */
+  .os-notif{position:fixed;right:14px;top:12px;z-index:80;display:flex;flex-direction:column;gap:8px}
+  .notif{background:var(--os-card);border:1px solid var(--os-border);border-left:3px solid var(--os-blue);border-radius:10px;padding:12px 16px;font-size:.82rem;box-shadow:0 8px 30px rgba(0,0,0,.4);animation:notifIn .25s ease;max-width:280px}
+  .notif.off{border-color:var(--os-red)}
+  @keyframes notifIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+  .os-about{background:rgba(0,0,0,.25);border:1px solid var(--os-border);border-radius:10px;padding:16px;text-align:center}
+</style>
+</head>
+<body>
+<div class="boot" id="boot">
+  <div class="logo">Belka <span style="color:#60a5fa">OS</span></div>
+  <div class="bar"><i></i></div>
+  <div class="tip">Загрузка системы…</div>
+</div>
+
+<div class="os-shell">
+  <div class="desktop" id="desktop">
+    <div class="desktop-icons">
+      <div class="dicon" onclick="openApp('store')"><div class="ic">🛍️</div>Belkapo Store</div>
+      <div class="dicon" onclick="openApp('snake')"><div class="ic">🐍</div>Змейка</div>
+      <div class="dicon" onclick="openApp('browser')"><div class="ic">🌐</div>Belkapo Browser</div>
+      <div class="dicon" onclick="openApp('whelper')"><div class="ic">🛡️</div>WHelper</div>
+    </div>
+
+    <!-- Окно: Belkapo Store -->
+    <div class="win" id="win-store" style="left:8%;top:8%;width:520px;height:460px">
+      <div class="win-head"><span class="t">🛍️ Belkapo Store</span><button class="win-x" onclick="closeApp('store')">✕</button></div>
+      <div class="win-body">
+        <div class="store-grid" id="storeGrid"></div>
+      </div>
+    </div>
+
+    <!-- Окно: Змейка -->
+    <div class="win" id="win-snake" style="left:46%;top:8%;width:440px;height:460px">
+      <div class="win-head"><span class="t">🐍 Змейка</span><button class="win-x" onclick="closeApp('snake')">✕</button></div>
+      <div class="win-body">
+        <div id="snakeWrap">
+          <div class="snake-hud"><span>Очки: <b id="snScore">0</b></span><span>Рекорд: <b id="snBest">0</b></span></div>
+          <canvas id="snakeCv" width="360" height="360"></canvas>
+          <div class="snake-ctrl"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span style="color:var(--os-muted);font-size:.78rem;margin-left:4px">— управление · Пауза — Пробел</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Окно: Belkapo Browser -->
+    <div class="win" id="win-browser" style="left:14%;top:14%;width:560px;height:480px">
+      <div class="win-head"><span class="t">🌐 Belkapo Browser</span><button class="win-x" onclick="closeApp('browser')">✕</button></div>
+      <div class="win-body">
+        <div class="browser-bar"><span style="font-weight:900;color:var(--os-blue)">B</span><input class="addr" id="addrBar" value="belkapo://home"></div>
+        <div class="browser-pages" id="browserPages">
+          <div class="page show" data-page="home">
+            <h3 style="margin-bottom:10px">Belkapo Browser — фейковый интернет</h3>
+            <p style="color:var(--os-muted)">Добро пожаловать. Тут ты можешь <a onclick="navTo('virus')">скачать вирусы</a> и потом почистить их через WHelper.</p>
+          </div>
+          <div class="page" data-page="virus">
+            <h3 style="margin-bottom:10px">⚠️ Вирусный сайт belka-virus.net</h3>
+            <p style="color:var(--os-muted)">Скачано: троян, рекламное ПО, блокировка языка…</p>
+            <div style="margin-top:12px"><button style="background:var(--os-red);border:none;color:#fff;padding:9px 16px;border-radius:8px;cursor:pointer;font-family:inherit" onclick="downloadVirus()">Скачать вирус</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Окно: WHelper -->
+    <div class="win" id="win-whelper" style="left:60%;top:12%;width:520px;height:500px">
+      <div class="win-head"><span class="t">🛡️ WHelper — антивирус</span><button class="win-x" onclick="closeApp('whelper')">✕</button></div>
+      <div class="win-body">
+        <div class="wh-grid">
+          <button class="wh-btn" onclick="whAction('fonts')"><span class="ic">🔤</span><span class="tt">Починить шрифты</span></button>
+          <button class="wh-btn" onclick="whAction('lang')"><span class="ic">🌍</span><span class="tt">Вернуть русский</span></button>
+          <button class="wh-btn" onclick="whAction('belre')"><span class="ic">🔧</span><span class="tt">Войти в BelRE</span></button>
+          <button class="wh-btn" onclick="whAction('uac')"><span class="ic">🛂</span><span class="tt">Включить UAC</span></button>
+          <button class="wh-btn" onclick="whAction('exp')"><span class="ic">📁</span><span class="tt">Открыть проводник</span></button>
+          <button class="wh-btn" onclick="whAction('taskmgr')"><span class="ic">📊</span><span class="tt">Диспетчер задач</span></button>
+          <button class="wh-btn" onclick="whAction('reinstall')"><span class="ic">💿</span><span class="tt">Переустановить Belka OS</span></button>
+          <button class="wh-btn" onclick="whAction('autostart')"><span class="ic">🚀</span><span class="tt">Показать автозагрузку</span></button>
+          <button class="wh-btn" onclick="whAction('limits')"><span class="ic">🔓</span><span class="tt">Снятие ограничений</span></button>
+        </div>
+        <div class="wh-out" id="whOut"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="taskbar">
+    <div class="tb-logo">Belka OS</div>
+    <button class="tb-app" onclick="openApp('store')">🛍️ Store</button>
+    <button class="tb-app" onclick="openApp('snake')">🐍 Змейка</button>
+    <button class="tb-app" onclick="openApp('browser')">🌐 Browser</button>
+    <button class="tb-app" onclick="openApp('whelper')">🛡️ WHelper</button>
+    <div class="tb-clock" id="clock"></div>
+  </div>
+</div>
+
+<div class="os-notif" id="osNotif"></div>
+
+<script>
+// ---- Окна ----
+const WINW = { store:'win-store', snake:'win-snake', browser:'win-browser', whelper:'win-whelper' };
+let activeWin = null;
+function openApp(name) {
+  const w = document.getElementById(WINW[name]);
+  if (!w) return;
+  w.classList.add('show');
+  bringTop(name);
+  if (name === 'snake') ensureSnake();
+  if (name === 'store') renderStore();
+  if (name === 'browser') updateTb();
+  document.querySelectorAll('.tb-app').forEach(b => b.classList.toggle('on', b.textContent.indexOf(name) >= 0));
+}
+function closeApp(name){ document.getElementById(WINW[name]).classList.remove('show'); }
+function bringTop(name){ document.querySelectorAll('.win').forEach(w=>w.classList.remove('act')); document.getElementById(WINW[name]).classList.add('act'); }
+// перетаскивание окон
+document.querySelectorAll('.win-head').forEach(h => {
+  h.addEventListener('mousedown', e => {
+    const win = h.parentNode; win.classList.add('act');
+    const r = win.getBoundingClientRect();
+    const ox = e.clientX - r.left, oy = e.clientY - r.top;
+    function mv(ev){ win.style.left = (ev.clientX - ox) + 'px'; win.style.top = (ev.clientY - oy) + 'px'; }
+    function up(){ document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); }
+    document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
+  });
+});
+
+// ---- Boot ----
+setTimeout(() => document.getElementById('boot').classList.add('hide'), 2600);
+(function clock(){ const c=document.getElementById('clock'); if(c){ const d=new Date(); c.textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); } setTimeout(clock, 20000); })();
+
+// уведомления
+function notif(txt, off) { const n=document.createElement('div'); n.className='notif'+(off?' off':''); n.textContent=txt; document.getElementById('osNotif').appendChild(n); setTimeout(()=>n.remove(), 3500); }
+
+// ---- База "установленных" приложений ----
+let installed = {};
+try { installed = JSON.parse(localStorage.getItem('belka-installed')||'{}'); } catch(e){}
+function saveInst(){ try{ localStorage.setItem('belka-installed', JSON.stringify(installed)); }catch(e){} }
+
+// ---- Belkapo Store ----
+const APPS = [
+  { id:'snake2', ic:'🐍', nm:'Змейка 2.0', ds:'Классика на WASD.', type:'game' },
+  { id:'calc', ic:'🧮', nm:'Калькулятор', ds:'Простой калькулятор.', type:'util' },
+  { id:'notes', ic:'📝', nm:'Заметки', ds:'Блокнот для идей.', type:'util' }
+];
+function renderStore(){
+  const g = document.getElementById('storeGrid'); if (!g) return;
+  g.innerHTML = APPS.map(a => {
+    const owned = installed[a.id];
+    return '<div class="app-card"><div class="ic">'+a.ic+'</div><div class="nm">'+a.nm+'</div><div class="ds">'+a.ds+'</div><button id="stb-'+a.id+'" class="'+(owned?'got':'')+'">'+(owned?'Установлено':'Установить')+'</button></div>';
+  }).join('');
+  APPS.forEach(a => {
+    const b = document.getElementById('stb-'+a.id); if (!b) return;
+    b.onclick = () => { installed[a.id] = 1; saveInst(); notif('Установлено: '+a.nm); renderStore(); };
+  });
+}
+
+// ---- Змейка ----
+let snakeApp = null;
+function ensureSnake(){
+  if (snakeApp) { snakeApp.start(); return; }
+  snakeApp = new SnakeGame();
+}
+function SnakeGame(){
+  const cv = document.getElementById('snakeCv'); const ctx = cv.getContext('2d');
+  const N = 20, CELL = cv.width / N;
+  let snake = [], dir = {x:1,y:0}, nextDir = {x:1,y:0}, food, score, best, timer, paused, over;
+  best = parseInt(localStorage.getItem('belka-snake-best')||'0',10)||0;
+  document.getElementById('snBest').textContent = best;
+  const self = this;
+  this.start = function(){ if (!over) return; init(); };
+  function init(){
+    snake = [{x:9,y:11},{x:8,y:11},{x:7,y:11}]; dir = {x:1,y:0}; nextDir = {x:1,y:0};
+    score = 0; paused = false; over = false;
+    placeFood(); updateHud(); clearInterval(timer);
+    timer = setInterval(step, 130);
+    document.addEventListener('keydown', key);
+  }
+  function key(e){
+    const map = { w:{x:0,y:-1}, s:{x:0,y:1}, a:{x:-1,y:0}, d:{x:1,y:0} };
+    const nd = map[(e.key||'').toLowerCase()]; if (nd){ e.preventDefault(); nextDir = nd; }
+    if (e.code === 'Space'){ e.preventDefault(); paused = !paused; if(paused) clearInterval(timer); else if(!over) timer=setInterval(step,130); }
+    if (e.code === 'ArrowUp'){} // никакого
+    if (over && (nd)) init();
+  }
+  function placeFood(){ food = {x:0|Math.random()*N, y:0|Math.random()*N}; }
+  function updateHud(){ document.getElementById('snScore').textContent = score; document.getElementById('snBest').textContent = best; }
+  function step(){
+    if (paused || over) return;
+    dir = nextDir;
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    if (head.x < 0 || head.y < 0 || head.x >= N || head.y >= N || snake.some(s=>s.x===head.x&&s.y===head.y)){
+      end(); return;
+    }
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y){ score++; placeFood(); } else snake.pop();
+    updateHud(); draw();
+  }
+  function draw(){
+    ctx.fillStyle = '#0b1220'; ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.fillStyle = '#22c55e'; snake.forEach(s=>{ ctx.fillRect(s.x*CELL+1, s.y*CELL+1, CELL-2, CELL-2); });
+    ctx.fillStyle = '#e11d2e'; ctx.fillRect(food.x*CELL+1, food.y*CELL+1, CELL-2, CELL-2);
+  }
+  function end(){
+    over = true; clearInterval(timer);
+    document.removeEventListener('keydown', key);
+    if (score > best){ best = score; localStorage.setItem('belka-snake-best', best); }
+    updateHud(); draw();
+    ctx.fillStyle = 'rgba(5,7,13,.7)'; ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.fillStyle = '#e6ecf5'; ctx.font = '24px Segoe UI'; ctx.textAlign='center';
+    ctx.fillText('Игра окончена', cv.width/2, cv.height/2 - 8);
+    ctx.font = '14px Segoe UI'; ctx.fillStyle = '#93a3bd'; ctx.fillText('Очки: '+score+' — нажми WASD чтобы заново', cv.width/2, cv.height/2 + 20);
+  }
+  init(); draw();
+}
+
+// ---- Belkapo Browser (фейк-интернет) + вирусы ----
+function navTo(page){ document.querySelectorAll('.browser-pages .page').forEach(p=>p.classList.remove('show')); document.querySelector('[data-page="'+page+'"]').classList.add('show'); document.getElementById('addrBar').value = page==='virus' ? 'belkapo://virus-site' : 'belkapo://home'; }
+function updateTb(){}
+// черта вирусов в localStorage (для WHelper)
+const VK = 'belka-virus';
+function downloadVirus(){ const v = (JSON.parse(localStorage.getItem(VK)||'[]')); v.push({ name:'Trojan.BelkaDropper' }); v.push({ name:'Adware.Belpop' }); v.push({ name:'LangBroken.Pack' }); localStorage.setItem(VK, JSON.stringify(v)); notif('⚠️ 3 вируса установлены!', true); navTo('home'); }
+function virusCount(){ try{ return (JSON.parse(localStorage.getItem(VK)||'[]')).length; }catch(e){ return 0; } }
+
+// ---- WHelper ----
+function whAction(kind){
+  const out = document.getElementById('whOut');
+  const vk = JSON.parse(localStorage.getItem(VK)||'[]');
+  const nc = virusCount();
+  let txt = '';
+  switch(kind){
+    case 'fonts': txt = '> check-fonts\n> Шрифты заменены на стандартный Segoe UI.'; break;
+    case 'lang': txt = '> set-lang ru-RU\n> Русский язык восстановлен'+(nc>0?' (заблокирован вирусом)':'.'); break;
+    case 'belre': txt = '> belre --enter\n> Вход в среду восстановления BelRE выполнен. Система готова к чистоте.'; break;
+    case 'uac': txt = '> enable-uac\n> UAC включён. Подтверждение прав возобновлено. (UAC — контроль учётных записей, запрашивает разрешение на изменения)'; break;
+    case 'exp': txt = '> explorer\n> Проводник открыт: Belka://C:/Пользователи/Monolith'; break;
+    case 'taskmgr': txt = '> taskmgr\n> Диспетчер задач: belka.exe и процессы Belkapo отображены.'; break;
+    case 'reinstall': txt = '> belka-reset --full\n> ПЕРЕУСТАНОВКА: все вирусы удалены, настройки сброшены. Belka OS чистая!'; localStorage.removeItem(VK); break;
+    case 'autostart': txt = '> msautostart\n> Автозагрузка: belka.exe, belkapo-browser, [вирус скрыт]'+(nc>0?' ⚠':' ✓'); break;
+    case 'limits': txt = '> unlimit --all\n> Ограничения сняты. Режим администратора активен.'; break;
+  }
+  out.textContent = txt;
+  if (kind === 'reinstall') { localStorage.removeItem('belka-installed'); setTimeout(()=>notif('💿 Belka OS переустановлена'), 600); }
+  // вирусы чистим частично
+  if (['fonts','lang'].includes(kind) && nc>0){ vk.shift(); localStorage.setItem(VK, JSON.stringify(vk)); notif('🛡️ Один вирус обезврежен', false); }
+}
+
+// дефолтные вирусы при первом запуске — нет, честно: пока вручную через браузер
+notif('💾 Belka OS загружена. Начни с Browser → скачай вирус → вылечи через WHelper.');
+</script>
+</body>
+</html>

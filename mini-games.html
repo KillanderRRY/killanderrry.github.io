@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мини-игры — KillanderRRY</title>
+<meta name="description" content="Мини-игры KillanderRRY: дрифт, 2048, сапёр, крестики-нолики, реакции и аркады.">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--a:225,29,46;--a2:255,46,63;--nav-rgb:10,10,12;
+  }
+  html[data-theme="light"]{--bg:#f4f4f6;--bg-2:#eaeaee;--card:#fff;--card-2:#f2f2f5;--text:#18181c;--muted:#5c5c68;--border:#d6d6de;--nav-rgb:244,244,246;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:88px}
+  body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+  header{position:sticky;top:0;z-index:50;background:rgba(var(--nav-rgb,.8));background:rgba(10,10,12,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1080px;margin:0 auto;padding:0 16px;gap:12px}
+  .logo{font-weight:900;text-decoration:none;white-space:nowrap}
+  .logo span{color:var(--red)}
+  .back{color:var(--muted);text-decoration:none;font-size:.9rem;white-space:nowrap}
+  .back:hover{color:var(--red-2)}
+  main{padding:30px 16px 90px;max-width:1080px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px}
+  .game{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:18px;display:flex;flex-direction:column;position:relative;transition:.2s}
+  .game:hover{border-color:rgba(var(--a),.45)}
+  .game h2{font-size:1.1rem;font-weight:800;margin-bottom:4px}
+  .game .sub{color:var(--muted);font-size:.8rem;margin-bottom:12px}
+  .game .stage{position:relative;flex:1;display:flex;align-items:center;justify-content:center;min-height:220px;border:1px solid var(--border);border-radius:12px;background:var(--bg-2);overflow:hidden}
+  .game .ctrl{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
+  .btn{background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;border:none;border-radius:10px;padding:8px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem}
+  .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+  .btn:hover{transform:translateY(-1px)}
+  .score-line{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-bottom:8px}
+  .score-line b{color:var(--text)}
+  /* Канвас дрифт+джамп */
+  canvas.gc{display:block;width:100%;max-width:280px;height:auto;background:var(--bg-2)}
+  /* 2048 */
+  .t2048{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:min(280px,94%);aspect-ratio:1}
+  .tile{border-radius:8px;background:#20242e;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.5rem}
+  .tile.v2{background:#2a3a5e;color:#fff}.tile.v4{background:#3b5b8f;color:#fff}.tile.v8{background:#4a6fb5;color:#fff}.tile.v16{background:#5a84d6;color:#fff}.tile.v32{background:#e11d2e;color:#fff}.tile.v64{background:#e03548;color:#fff}.tile.v128{background:#f0c040;color:#111}.tile.v256{background:#f5d060;color:#111}.tile.v512{background:#fae070;color:#111}.tile.v1024{background:#fff0a0;color:#111}.tile.v2048{background:#fff;color:#e11d2e}
+  button.tbtn{background:var(--red);border:none;color:#fff;border-radius:6px;padding:4px 10px;font-size:.8rem;font-weight:700;cursor:pointer;margin:6px 2px}
+  /* Сапёр */
+  .mine-grid{display:grid;gap:3px}
+  .cell{width:26px;height:26px;background:#303645;border:1px solid #1a1f2a;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;cursor:pointer}
+  .cell.open{background:#1a1f2a}
+  .cell.mine{background:var(--red)}
+  .cell.flag{background:#3a5a8f}
+  /* Нолики */
+  .tic-tac{display:grid;grid-template-columns:repeat(3,64px);gap:6px;justify-content:center}
+  .tt-cell{width:64px;height:64px;background:var(--card-2);border:1px solid var(--border);border-radius:10px;font-size:1.7rem;font-weight:900;cursor:pointer;color:var(--text)}
+  /* Реакция */
+  .re-box{width:100%;height:220px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:12px;font-weight:800;font-size:1rem;transition:background .1s}
+  /* Искра: канва */
+  /* Угадай число */
+  .g-input{width:80px;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--bg-2);color:var(--text);font-family:inherit;text-align:center;font-size:1rem}
+  .hint-line{font-size:.85rem;margin-top:8px;color:var(--muted);min-height:22px}
+  .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(8,10,16,.8);text-align:center;padding:12px;border-radius:12px}
+  .overlay.hidden{display:none}
+  .overlay .big{font-size:1.4rem;font-weight:900}
+</style>
+</head>
+<body>
+<script>
+  (function () {
+    try {
+      var th = localStorage.getItem('kr-theme') || 'dark';
+      var ac = localStorage.getItem('kr-accent') || 'red';
+      var root = document.documentElement;
+      root.setAttribute('data-theme', th);
+      root.setAttribute('data-accent', ac);
+    } catch (e) {}
+  })();
+</script>
+
+<header>
+  <nav>
+    <a href="bonus.html" class="logo">🎮 <span>Мини-игры</span></a>
+    <a class="back" href="bonus.html">← Секретная страница</a>
+  </nav>
+</header>
+
+<main>
+  <div class="grid">
+
+    <!-- 2. Дрифт-тачка -->
+    <div class="game">
+      <h2>🏎️ Дрифт</h2><div class="sub">Держи занос и набирай очки (←/→ или A/D)</div>
+      <div class="stage">
+        <canvas id="driftCv" class="gc" width="280" height="220"></canvas>
+        <div class="overlay hidden" id="driftOv"><div class="big" id="driftT">ДРИФТ</div><button class="btn" onclick="driftStart()">Старт</button></div>
+      </div>
+      <div class="score-line"><span>Очки: <b id="driftScore">0</b></span><span>Рекорд: <b id="driftBest">0</b></span></div>
+      <div class="ctrl"><button class="btn" onclick="driftStart()">Старт</button></div>
+    </div>
+
+    <!-- 6. 2048 -->
+    <div class="game">
+      <h2>🔢 2048</h2><div class="sub">Складывай плитки (стрелки / свайпы)</div>
+      <div class="stage" style="flex-direction:column">
+        <div class="score-line" style="width:min(280px,94%)"><span>Счёт: <b id="g2048score">0</b></span><button class="btn ghost" onclick="g2048New()">Новое</button></div>
+        <div class="t2048" id="g2048grid"></div>
+        <div style="margin-top:8px" id="g2048msg"></div>
+      </div>
+    </div>
+
+    <!-- 9. Сапёр -->
+    <div class="game">
+      <h2>💣 Сапёр</h2><div class="sub">Открой все клетки без мин. ПКМ — флаг</div>
+      <div class="stage">
+        <div id="mineWrap" style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div class="mine-grid" id="mineGrid"></div>
+          <div style="font-size:.8rem;color:var(--muted)" id="mineInfo">Мин: <b id="mineLeft">10</b></div>
+        </div>
+      </div>
+      <div class="ctrl"><button class="btn" onclick="mineNew()">Сброс</button></div>
+    </div>
+
+    <!-- 10. Крестики-нолики против ИИ -->
+    <div class="game">
+      <h2>⭕ Крестики-нолики</h2><div class="sub">Против ИИ (ты играешь за X)</div>
+      <div class="stage">
+        <div class="tic-tac" id="ttGrid"></div>
+      </div>
+      <div class="ctrl"><button class="btn" onclick="ttNew()">Заново</button><span id="ttMsg" style="font-size:.85rem;color:var(--muted)"></span></div>
+    </div>
+
+    <!-- 12. Реакция -->
+    <div class="game">
+      <h2>⚡ Реакция</h2><div class="sub">Нажми, как только станет красным</div>
+      <div class="stage"><div class="re-box" id="reBox" onclick="reClick()">Жди красный…</div></div>
+      <div class="score-line"><span>Время: <b id="reTime">–</b> мс</span><span>Лучшее: <b id="reBest">–</b></span></div>
+      <div class="ctrl"><button class="btn" onclick="reStart()">Начать</button></div>
+    </div>
+
+    <!-- 13. Поймай искру -->
+    <div class="game">
+      <h2>✨ Лови искру</h2><div class="sub">Кликай по вспышкам на канвасе</div>
+      <div class="stage"><canvas id="sparkCv" class="gc" width="280" height="220"></canvas></div>
+      <div class="score-line"><span>Поймано: <b id="sparkScore">0</b></span><span>Точек за раз: <b id="sparkN">1</b></span></div>
+      <div class="ctrl"><button class="btn" onclick="sparkStart()">Начать</button></div>
+    </div>
+
+    <!-- 14. Угадай число -->
+    <div class="game">
+      <h2>🎯 Угадай число</h2><div class="sub">Компьютер загадал 1–100</div>
+      <div class="stage" style="flex-direction:column">
+        <p style="margin-bottom:12px">Попыток: <b id="gTry">0</b></p>
+        <div style="display:flex;gap:8px"><input class="g-input" id="gIn" type="number" min="1" max="100"><button class="btn" onclick="gGuess()">ОК</button></div>
+        <div class="hint-line" id="gHint"></div>
+      </div>
+      <div class="ctrl"><button class="btn" onclick="gNew()">Сброс</button></div>
+    </div>
+
+    <!-- 20. Джамп-кликер -->
+    <div class="game">
+      <h2>🦘 Джамп</h2><div class="sub">Кликай, чтобы прыгать по платформам</div>
+      <div class="stage"><canvas id="jumpCv" class="gc" width="280" height="220"></canvas></div>
+      <div class="score-line"><span>Счёт: <b id="jumpScore">0</b></span><span>Рекорд: <b id="jumpBest">0</b></span></div>
+      <div class="ctrl"><button class="btn" onclick="jumpStart()">Старт</button></div>
+    </div>
+
+  </div>
+</main>
+<script src="site-effects.js"></script>
+<script src="site-vfx.js"></script>
+<script>
+/* ---------- 2. Дрифт ---------- */
+(function(){
+  const cv=document.getElementById('driftCv'),ctx=cv.getContext('2d');
+  let on=false,score=0,best=0,x=0,vy=0,ov=document.getElementById('driftOv'),overt=document.getElementById('driftT');
+  try{best=+localStorage.getItem('mg-drift-best')||0}catch(e){}
+  const keys={};
+  document.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='ArrowLeft')keys['arrowleft']=true;if(e.key==='ArrowRight')keys['arrowright']=true;});
+  document.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;if(e.key==='ArrowLeft')keys['arrowleft']=false;if(e.key==='ArrowRight')keys['arrowright']=false;});
+  window.driftStart=function(){on=true;score=0;x=cv.width/2;vy=0;ov.classList.add('hidden');document.getElementById('driftScore').textContent=0;};
+  function tick(){
+    let dir=0;
+    if(keys['arrowleft']||keys['a'])dir=-1; if(keys['arrowright']||keys['d'])dir=1;
+    if(on){ vy+=(dir*1.6-vy)*0.1; x+=vy; x=Math.max(14,Math.min(cv.width-14,x)); score+=Math.abs(vy)*2; document.getElementById('driftScore').textContent=Math.round(score); }
+    ctx.clearRect(0,0,cv.width,cv.height);
+    // дорога
+    ctx.fillStyle='#20242e';ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.strokeStyle='rgba(225,29,46,.4)';ctx.lineWidth=2;ctx.setLineDash([10,10]);ctx.beginPath();ctx.moveTo(cv.width/2,0);ctx.lineTo(cv.width/2,cv.height);ctx.stroke();ctx.setLineDash([]);
+    // машина
+    ctx.fillStyle='#e11d2e';
+    ctx.save();ctx.translate(x,cv.height-40);ctx.rotate(vy*0.05);
+    ctx.fillRect(-14,-9,28,18);ctx.restore();
+    if(on&&Math.abs(vy)>1.2){ctx.fillStyle='rgba(255,255,255,.3)';ctx.beginPath();ctx.arc(x-vy*6,cv.height-16,3,0,7);ctx.fill();}
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ---------- 6. 2048 ---------- */
+(function(){
+  let g=null,scoreA=0;
+  const grid=document.getElementById('g2048grid'),scoreEl=document.getElementById('g2048score'),msg=document.getElementById('g2048msg');
+  function empty(){const a=[];for(let y=0;y<4;y++){a.push([]);for(let x=0;x<4;x++)a[y].push(0);}return a;}
+  function spawn(){const cells=[];for(let y=0;y<4;y++)for(let x=0;x<4;x++)if(!g[y][x])cells.push([y,x]);if(cells.length){const c=cells[Math.random()*cells.length|0];g[c[0]][c[1]]=Math.random()<.9?2:4;}}
+  function slideRow(row){let a=row.filter(v=>v);for(let i=0;i<a.length-1;i++){if(a[i]===a[i+1]){a[i]*=2;scoreA+=a[i];a.splice(i+1,1);}}while(a.length<4)a.push(0);return a;}
+  function move(dx,dy){
+    let moved=false;
+    for(let i=0;i<4;i++){
+      if(dy===0){ // row
+        let row=g[i];
+        if(dx>0)row=row.reverse();
+        let nr=slideRow(row);
+        if(dx>0)nr.reverse();
+        for(let x=0;x<4;x++){if(g[i][x]!==nr[x])moved=true;g[i][x]=nr[x];}
+      } else { // col
+        let col=[];for(let y=0;y<4;y++)col.push(g[y][i]);
+        if(dy>0)col=col.reverse();
+        let nc=slideRow(col);
+        if(dy>0)nc.reverse();
+        for(let y=0;y<4;y++){if(g[y][i]!==nc[y])moved=true;g[y][i]=nc[y];}
+      }
+    }
+    if(moved){spawn();render();}
+  }
+  function render(){
+    scoreEl.textContent=scoreA;
+    grid.innerHTML=g.map((row,y)=>row.map(v=>'<div class="tile'+(v?' v'+v:'')+'">'+(v||'')+'</div>').join('')).join('');
+  }
+  window.g2048New=function(){g=empty();scoreA=0;spawn();spawn();render();msg.textContent='';};
+  window.g2048New();
+  document.addEventListener('keydown',e=>{
+    if(!g)return;
+    const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
+    if(m[e.key]){e.preventDefault();move(m[e.key][0],m[e.key][1]);check2048();}
+  });
+  function check2048(){let over=true;for(let y=0;y<4&&over;y++)for(let x=0;x<4;x++)if(!g[y][x]){over=false;break;} if(over)msg.textContent='Игра окончена! Счёт: '+scoreA;}
+})();
+
+/* ---------- 9. Сапёр ---------- */
+(function(){
+  const R=9,C=9,M=10;
+  let gg=null,revealed=new Set(),flags=new Set(),over=false;
+  const gridEl=document.getElementById('mineGrid'),info=document.getElementById('mineInfo'),leftEl=document.getElementById('mineLeft');
+  function init(){gg=[];for(let y=0;y<R;y++){gg[y]=[];for(let x=0;x<C;x++)gg[y][x]=0;}revealed=new Set();flags=new Set();over=false;place();render();}
+  function place(){let placed=0;while(placed<M){let y=Math.random()*R|0,x=Math.random()*C|0;if(gg[y][x]!=-1){gg[y][x]=-1;placed++;}}for(let y=0;y<R;y++)for(let x=0;x<C;x++)if(gg[y][x]!==-1){let c=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){let ny=y+dy,nx=x+dx;if(ny>=0&&ny<R&&nx>=0&&nx<C&&gg[ny][nx]===-1)c++;}gg[y][x]=c;}}
+  function render(){
+    gridEl.style.gridTemplateColumns='repeat('+C+',26px)';
+    leftEl.textContent=M-flags.size;
+    let html='';
+    for(let y=0;y<R;y++)for(let x=0;x<C;x++){
+      const k=y+','+x;
+      let cls='cell',txt='';
+      if(revealed.has(k)){cls+=' open';if(gg[y][x]===-1){cls+=' mine';txt='💣';}else txt=gg[y][x]||'';}
+      else if(flags.has(k)){cls+=' flag';txt='🚩';}
+      html+='<div class="'+cls+'" data-y="'+y+'" data-x="'+x+'">'+txt+'</div>';
+    }
+    gridEl.innerHTML=html;
+  }
+  function reveal(y,x){
+    const k=y+','+x;
+    if(flags.has(k)||revealed.has(k)||y<0||y>=R||x<0||x>=C)return;
+    if(gg[y][x]===-1){over=true;revealed.add(k);win(0);return;}
+    revealed.add(k);
+    if(gg[y][x]===0){for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)reveal(y+dy,x+dx);}
+  }
+  function win(r){render();let all=[...revealed].length;if(r===1)info.textContent='💥 Игра окончена';else if(all>=R*C-M)info.textContent='🎉 Победа!';}
+  gridEl.addEventListener('click',e=>{const c=e.target.dataset;if(!c||over)return;if(!c.y&&c.y!==0)return;reveal(+c.y,+c.x);win(0);let winC=true;for(let y=0;y<R;y++)for(let x=0;x<C;x++)if(gg[y][x]!==-1&&!revealed.has(y+','+x))winC=false;if(winC){over=true;info.textContent='🎉 Победа!';render();}});
+  gridEl.addEventListener('contextmenu',e=>{e.preventDefault();const c=e.target.dataset;if(!c&&c.y!==0)return;const k=c.y+','+c.x;if(flags.has(k))flags.delete(k);else flags.add(k);render();});
+  window.mineNew=init;
+  init();
+})();
+
+/* ---------- 10. Крестики-нолики vs ИИ ---------- */
+(function(){
+  let b=[],turn='X',over=false,won=false;
+  const gridEl=document.getElementById('ttGrid'),msg=document.getElementById('ttMsg');
+  function bb(){return Array(9).fill('');}
+  function render(){gridEl.innerHTML=b.map((v,i)=>'<button class="tt-cell" data-i="'+i+'">'+v+'</button>').join('');msg.textContent=won?'🤖 ИИ победил':(over?'Ничья':'Ты — X');}
+  function check(brd,p){const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];return w.some(t=>brd[t[0]]===p&&brd[t[1]]===p&&brd[t[2]]===p);}
+  function free(brd){return brd.map((v,i)=>v===''?i:-1).filter(i=>i>=0);}
+  function ai(){ // minimax для O
+    let best=-1,bs=-Infinity;
+    free(b).forEach(i=>{const nb=b.slice();nb[i]='O';let s=minimax(nb,'X');if(s>bs){bs=s;best=i;}});
+    return best;
+  }
+  function minimax(brd,pl){
+    if(check(brd,'O'))return 10; if(check(brd,'X'))return -10;
+    const f=free(brd); if(f.length===0)return 0;
+    let scores=[];f.forEach(i=>{const nb=brd.slice();nb[i]=pl;scores.push(minimax(nb,pl==='O'?'X':'O'));});
+    return pl==='O'?Math.max(...scores):Math.min(...scores);
+  }
+  function endB(){const f=free(b).length;over=f===0;return over;}
+  gridEl.addEventListener('click',e=>{const c=e.target.dataset;if(!c||c.i===undefined||over||turn!=='X'||b[+c.i])return;b[+c.i]='X';if(check(b,'X')){over=true;won=false;msg.textContent='🎉 Ты победил!';render();return;}if(!endB()){let id=ai();b[id]='O';if(check(b,'O')){over=true;won=true;render();return;}}endB();render();});
+  window.ttNew=function(){b=bb();turn='X';over=false;won=false;render();};
+  window.ttNew();
+})();
+
+/* ---------- 12. Реакция ---------- */
+(function(){
+  const box=document.getElementById('reBox'),tEl=document.getElementById('reTime'),bEl=document.getElementById('reBest');
+  let state='idle',timer=null,t0=0,best=null;
+  try{best=localStorage.getItem('mg-re-best');bEl.textContent=best+' мс';}catch(e){}
+  window.reStart=function(){state='wait';box.textContent='Жди красный…';box.style.background='#20242e';timer=setTimeout(()=>{if(state!=='wait')return;state='go';t0=performance.now();box.textContent='ЖМИ!';box.style.background='#e11d2e';},(700+Math.random()*1800));};
+  window.reClick=function(){if(state==='wait'){clearTimeout(timer);state='idle';box.textContent='Слишком рано! Стартуй заново';box.style.background='#20242e';}else if(state==='go'){const t=Math.round(performance.now()-t0);tEl.textContent=t+' мс';if(!best||t<+best){best=t;bEl.textContent=t+' мс';try{localStorage.setItem('mg-re-best',best);}catch(e){}}state='idle';box.textContent='Отлично! Снова?';setTimeout(()=>{box.style.background='#20242e';box.textContent='Старт';},800);}};
+})();
+
+/* ---------- 13. Лови искру ---------- */
+(function(){
+  const cv=document.getElementById('sparkCv'),ctx=cv.getContext('2d');
+  let on=false,n=1,caught=0;
+  window.sparkStart=function(){on=true;n=1;caught=0;document.getElementById('sparkScore').textContent=0;next();};
+  function core(){ctx.clearRect(0,0,cv.width,cv.height);if(!on)return;
+    const R=8;const spawns=[];const seen=new Set();
+    for(let i=0;i<n;i++){let x,y;let k=0;do{x=20+Math.random()*(cv.width-40);y=20+Math.random()*(cv.height-40);}while(seen.has(k=x+','+y)&&k++<20);seen.add(x+','+y);ctx.fillStyle='#ffd94a';ctx.shadowColor='#e11d2e';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(x,y,R,0,7);ctx.fill();spawns.push([x,y]);}
+    window._sparks=spawns;
+  }
+  function next(){n++;document.getElementById('sparkN').textContent=n;render();}
+  function render(){ctx.clearRect(0,0,cv.width,cv.height);if(!on)return;const seen=new Set();
+    for(let i=0;i<n;i++){let x,y;let k=0;do{x=20+Math.random()*(cv.width-40);y=20+Math.random()*(cv.height-40);k++;}while(seen.has(x+','+y)&&k<200);seen.add(x+','+y);ctx.fillStyle='#ffd94a';ctx.shadowColor='#e11d2e';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(x,y,8,0,7);ctx.fill();}
+    window._sparksArr=Array.from(seen).map(s=>{const p=s.split(',');return [+p[0],+p[1]];});
+    window._sparkN=n;
+  }
+  cv.addEventListener('click',e=>{
+    if(!on)return;
+    const r=cv.getBoundingClientRect();
+    const px=(e.clientX-r.left)*(cv.width/r.width),py=(e.clientY-r.top)*(cv.height/r.height);
+    const arr=window._sparksArr||[];
+    for(let i=0;i<arr.length;i++){
+      const [x,y]=arr[i];
+      if(Math.hypot(px-x,py-y)<20){caught++;on=false;document.getElementById('sparkScore').textContent=caught;setTimeout(()=>{n++;document.getElementById('sparkN').textContent=n;on=true;render();},250);break;}
+    }
+  });
+  render();
+})();
+
+/* ---------- 14. Угадай число ---------- */
+(function(){
+  let secret=0,tries=0;
+  const inp=document.getElementById('gIn'),hint=document.getElementById('gHint'),tr=document.getElementById('gTry');
+  function reset(){secret=1+Math.random()*100|0;tries=0;tr.textContent=0;hint.textContent='Загадано число от 1 до 100.';inp.value='';}
+  window.gNew=reset;
+  window.gGuess=function(){const v=parseInt(inp.value,10);if(isNaN(v))return;tries++;tr.textContent=tries;if(v===secret){hint.textContent='🎉 Угадал за '+tries+' попыток! Сыграем ещё?';secret=1+Math.random()*100|0;tries=0;tr.textContent=0;}else if(v<secret)hint.textContent='Больше ↑';else hint.textContent='Меньше ↓';inp.value='';inp.focus();};
+  reset();
+})();
+
+/* ---------- 20. Джамп-кликер ---------- */
+(function(){
+  const cv=document.getElementById('jumpCv'),ctx=cv.getContext('2d');
+  const W=280,H=220;
+  let on=false,playerY=0,vy=0,platY=0,score=0,best=0,debounce=false;
+  try{best=+localStorage.getItem('mg-jump-best')||0;document.getElementById('jumpBest').textContent=best;}catch(e){}
+  window.jumpStart=function(){on=true;playerY=H-40;vy=0;platY=H-40;score=0;document.getElementById('jumpScore').textContent=0;};
+  function loop(){
+    if(on){
+      vy-=0.4; playerY-=vy; platY-=0.5+score*0.02;
+      if(vy<0){ // падение
+        if(playerY>=platY){playerY=platY;vy=0;}
+      }
+      if(input&&playerY>=platY){vy=8;score++;document.getElementById('jumpScore').textContent=score;}
+      if(playerY>H+40){on=false;if(score>best){best=score;try{localStorage.setItem('mg-jump-best',best);}catch(e){}}document.getElementById('jumpBest').textContent=best;}
+    }
+    ctx.clearRect(0,0,W,H);
+    // платформа
+    ctx.fillStyle='#3b5b8f';ctx.fillRect(0,platY,W,8);
+    // игрок
+    ctx.fillStyle='#e11d2e';ctx.fillRect(W/2-12,playerY-20,24,20);
+    if(on&&playerY<platY){ctx.fillStyle='#ffd94a';ctx.beginPath();ctx.arc(W/2,platY,5,0,7);ctx.fill();}
+    requestAnimationFrame(loop);
+  }
+  let input=false;
+  cv.addEventListener('click',()=>{input=true;setTimeout(()=>input=false,80);});
+  cv.addEventListener('click',function jumpClick(){cv.removeEventListener('click',jumpClick);});
+  loop();
+})();
+</script>
+</body>
+</html>
