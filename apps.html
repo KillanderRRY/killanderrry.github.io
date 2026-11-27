@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Приложения — KillanderRRY</title>
+<meta name="description" content="Приложения KillanderRRY. Скачай KillanderRRY notes — удобный менеджер заметок.">
+<link rel="stylesheet" href="site-effects.css">
+<link rel="stylesheet" href="site-vfx.css">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0f0f13;--card:#15151b;--card-2:#1b1b23;
+    --red:#e11d2e;--red-2:#ff2e3f;--text:#f2f2f2;--muted:#9a9aa6;--border:#26262f;
+    --radius:16px;--shadow:0 20px 50px rgba(0,0,0,.55);
+    --a:225,29,46;--a2:255,46,63;--nav-rgb:10,10,12;--tag-soft:#ffd9dd;
+  }
+  html[data-accent="purple"]{
+    --red:#a855f7;--red-2:#c084fc;--a:168,85,247;--a2:192,132,252;--tag-soft:#e5d5ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(600px 400px at 15% 0%,rgba(var(--a),.14),transparent 60%),radial-gradient(700px 500px at 85% 100%,rgba(var(--a),.12),transparent 60%),radial-gradient(500px 340px at 50% 45%,rgba(var(--a),.08),transparent 65%);animation:bgDrift 20s ease-in-out infinite alternate}
+  @keyframes bgDrift{from{opacity:.6}to{opacity:1}}
+  .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .aurora span{position:absolute;border-radius:50%;filter:blur(70px);opacity:.26}
+  .aurora .b1{width:440px;height:440px;background:radial-gradient(circle,rgba(var(--a),.5),transparent 70%);top:-120px;left:8%;animation:drift1 26s ease-in-out infinite alternate}
+  .aurora .b2{width:380px;height:380px;background:radial-gradient(circle,rgba(var(--a),.5),transparent 70%);bottom:6%;right:6%;animation:drift2 32s ease-in-out infinite alternate}
+  .aurora .b3{width:300px;height:300px;background:radial-gradient(circle,rgba(var(--a2),.35),transparent 70%);top:38%;left:52%;animation:drift3 40s ease-in-out infinite alternate}
+  @keyframes drift1{from{transform:translate(0,0)}to{transform:translate(90px,-60px)}}
+  @keyframes drift2{from{transform:translate(0,0)}to{transform:translate(-100px,-70px)}}
+  @keyframes drift3{from{transform:translate(0,0)}to{transform:translate(70px,50px)}}
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in-view{opacity:1;transform:none}
+  main,header{position:relative;z-index:1}
+  a{color:inherit}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--red-2);outline-offset:3px;border-radius:4px}
+  ::selection{background:rgba(var(--a),.55);color:#fff}
+  body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .logo{cursor:none}
+  .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%}
+  .cursor-dot{width:8px;height:8px;margin:-4px 0 0 -4px;background:var(--red-2);box-shadow:0 0 12px var(--red),0 0 24px rgba(var(--a),.6);will-change:transform}
+  .cursor-ring{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;border:1.5px solid rgba(var(--a2),.85);background:transparent;transition:transform .12s ease-out;will-change:transform}
+  .cursor-ring.is-hover{transform:scale(1.5);border-color:var(--red-2);box-shadow:0 0 12px rgba(var(--a),.8)}
+  @media (hover:none),(pointer:coarse){ .cursor-dot,.cursor-ring{display:none} }
+  .global-particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+  .section-line{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.55;box-shadow:0 0 14px rgba(var(--a),.5)}
+  .loader{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .5s ease,visibility .5s ease}
+  .loader.hide{opacity:0;visibility:hidden}
+  .loader .flag{width:52px;height:34px;border-radius:4px;overflow:hidden;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/34px 34px;box-shadow:0 0 26px rgba(var(--a),.9);animation:pulse .9s ease-in-out infinite alternate}
+  .loader .pole{width:4px;height:58px;background:var(--muted);border-radius:2px;margin-left:6px}
+  .loader-wrap{display:flex;align-items:center}
+  @keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(1.12);opacity:1}}
+  .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--red),var(--red-2));box-shadow:0 0 12px rgba(var(--a),.8)}
+  .container{width:min(1080px,92%);margin:0 auto}
+  header{position:sticky;top:0;z-index:50;background:rgba(var(--nav-rgb),.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;letter-spacing:.5px;text-decoration:none}
+  .logo span{color:var(--red)}
+  .nav-links{display:flex;gap:20px;list-style:none;flex-wrap:wrap}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;transition:color .2s;position:relative;padding-bottom:3px}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--red-2));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--red-2)}
+
+  .page-hero{position:relative;padding:72px 0 40px;text-align:center;overflow:hidden}
+  .page-hero::before{content:"";position:absolute;inset:auto -20% -60% -20%;height:70%;background:radial-gradient(ellipse at center,rgba(var(--a),.22),transparent 65%);filter:blur(20px);pointer-events:none}
+  .eyebrow{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:2px;color:var(--red-2);text-transform:uppercase;margin-bottom:14px}
+  .page-hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;letter-spacing:-1px;line-height:1.1}
+  .page-hero p{color:var(--muted);max-width:52ch;margin:16px auto 0}
+
+  .apps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:26px;padding:20px 0 90px}
+  .app-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;position:relative;transition:transform .22s,border-color .22s,box-shadow .22s;display:flex;flex-direction:column}
+  .app-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--app-grad,linear-gradient(90deg,var(--red),var(--red-2)));opacity:0;transition:opacity .3s}
+  .app-card:hover{transform:translateY(-6px);border-color:var(--app-grad,var(--red));box-shadow:0 22px 50px rgba(var(--a),.18)}
+  .app-card:hover::before{opacity:1}
+  .app-icon{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:1.9rem;box-shadow:0 8px 24px rgba(168,85,247,.4);flex-shrink:0}
+  .app-head{display:flex;align-items:center;gap:16px;padding:24px 24px 6px}
+  .app-head h3{font-size:1.25rem;font-weight:800}
+  .app-badge{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-top:4px;background:rgba(168,85,247,.18);color:#c084fc;border:1px solid rgba(168,85,247,.4)}
+  .app-body{padding:12px 24px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .app-body p{color:var(--muted);font-size:.94rem}
+  .app-feats{display:flex;flex-wrap:wrap;gap:8px}
+  .feat{font-size:.78rem;font-weight:600;color:var(--text);background:rgba(var(--a),.1);border:1px solid rgba(var(--a),.25);padding:5px 11px;border-radius:999px}
+  .app-actions{display:flex;gap:12px;padding:0 24px 24px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:.92rem;padding:12px 22px;border-radius:12px;transition:transform .18s,box-shadow .25s;border:1px solid transparent;cursor:pointer}
+  .btn-primary{background:linear-gradient(135deg,#a855f7,#8b5cf6);color:#fff;box-shadow:0 10px 26px rgba(168,85,247,.35)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(168,85,247,.45)}
+  .btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--red-2);color:var(--red-2)}
+  @media (max-width:560px){ .nav-links{gap:12px;font-size:.8rem} }
+</style>
+</head>
+<body>
+<div class="loader" id="pageLoader"><div class="loader-wrap"><div class="flag"></div><div class="pole"></div></div></div>
+<div class="scroll-progress" id="scrollProg" aria-hidden="true"></div>
+<script>
+  (function () {
+    try {
+      var th = localStorage.getItem('kr-theme') || 'dark';
+      var ac = localStorage.getItem('kr-accent') || 'red';
+      document.documentElement.setAttribute('data-theme', th);
+      document.documentElement.setAttribute('data-accent', ac);
+    } catch (e) {}
+  })();
+</script>
+<div class="aurora" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo">Killander<span>RRY</span><span class="logo-eq" aria-hidden="true"><i></i><i></i><i></i></span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="mods.html">Моды</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="download.html">Скачать</a></li>
+        <li><a href="apps.html" class="active">Приложения</a></li>
+        <li><a href="youtube.html">YouTube</a></li>
+        <li><a href="design.html">Дизайн</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="settings.html">Настройки</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="section-line" aria-hidden="true"></div>
+    <div class="container">
+      <span class="eyebrow">Мои приложения</span>
+      <h1>Приложения</h1>
+      <p>Мои десктопные программы, которые я делаю. Скачивай и пользуйся — каждая версия постепенно растёт.</p>
+      <div class="stats" style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:34px 0 10px">
+        <div class="pill" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:10px 18px;font-size:.88rem;color:var(--muted)">Приложений <b style="color:var(--text)">1</b></div>
+        <div class="pill" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:10px 18px;font-size:.88rem;color:var(--muted)">В разработке <b style="color:var(--text)">скоро</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="apps-grid">
+        <article class="app-card tilt reveal" style="--app-grad:linear-gradient(90deg,#a855f7,#ec4899)">
+          <div class="app-head">
+            <div class="app-icon">📝</div>
+            <div>
+              <h3>KillanderRRY notes</h3>
+              <span class="app-badge">alpha</span>
+            </div>
+          </div>
+          <div class="app-body">
+            <p>Удобный менеджер заметок с тёмной темой, папками, рисованием и эффектами. Пиши, сохраняй и упорядочивай свои мысли.</p>
+            <div class="app-feats">
+              <span class="feat">Заметки и папки</span>
+              <span class="feat">Рисование</span>
+              <span class="feat">Тёмная тема</span>
+              <span class="feat">Эффекты</span>
+            </div>
+          </div>
+          <div class="app-actions">
+            <a class="btn btn-primary" href="apps-notes.html">Смотреть</a>
+            <a class="btn btn-ghost" href="https://drive.google.com/file/d/1hgrD7oWswq9NzcMbw87-mMYNu46tnUB_/view?usp=drive_link" target="_blank" rel="noopener">Скачать</a>
+          </div>
+        </article>
+
+        <article class="app-card tilt reveal" data-delay="1" style="opacity:0;border-style:dashed;align-items:center;justify-content:center;text-align:center;min-height:280px;--app-grad:linear-gradient(90deg,var(--muted),var(--muted))">
+          <div style="color:var(--muted);font-size:2rem;margin-bottom:10px">🚧</div>
+          <p style="color:var(--muted);max-width:26ch;margin:0 auto;padding:0 24px">Новое приложение появится здесь. Скоро.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  if (!reduceMotion && finePointer) {
+    document.body.classList.add('has-cursor');
+    const dot = document.createElement('div'); dot.className = 'cursor-dot';
+    const ring = document.createElement('div'); ring.className = 'cursor-ring';
+    document.body.appendChild(dot); document.body.appendChild(ring);
+    let mx = -100, my = -100, rx = mx, ry = my;
+    window.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+      ring.classList.toggle('is-hover', !!e.target.closest('a,button,.app-card,input,select,textarea,label'));
+    }, { passive: true });
+    (function ringLoop(){ rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16; ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)'; requestAnimationFrame(ringLoop); })();
+  }
+
+  if (!reduceMotion && (function(){ try { return (localStorage.getItem('kr-particles') || 'on') !== 'off'; } catch (e) { return true; } })()) {
+    const gpCv = document.createElement('canvas');
+    gpCv.className = 'global-particles';
+    document.body.appendChild(gpCv);
+    const gctx = gpCv.getContext('2d');
+    const gdpr = Math.min(devicePixelRatio || 1, 2);
+    let gparts;
+    const gResize = () => {
+      gpCv.width = innerWidth * gdpr; gpCv.height = innerHeight * gdpr;
+      const n = Math.min(50, Math.floor(innerWidth / 28));
+      gparts = Array.from({ length: n }, () => ({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 0.6+Math.random()*1.8, s: 0.08+Math.random()*0.35, alpha: 0.1+Math.random()*0.3, drift: Math.random()*Math.PI*2 }));
+    };
+    gResize(); window.addEventListener('resize', gResize);
+    let gt = 0;
+    (function gLoop(){
+      gt += 0.01;
+      gctx.setTransform(gdpr,0,0,gdpr,0,0); gctx.clearRect(0,0,innerWidth,innerHeight);
+      gparts.forEach((p) => {
+        p.y -= p.s; p.x += Math.sin(gt + p.drift) * 0.2;
+        if (p.y < -10) { p.y = innerHeight + 10; p.x = Math.random() * innerWidth; }
+        gctx.beginPath(); gctx.fillStyle = 'rgba(168,85,247,' + p.alpha + ')'; gctx.arc(p.x, p.y, p.r, 0, Math.PI*2); gctx.fill();
+      });
+      requestAnimationFrame(gLoop);
+    })();
+  }
+
+  if (!reduceMotion) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  }
+
+  if (finePointer) {
+    document.querySelectorAll('.tilt').forEach((el) => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = 'perspective(700px) rotateY(' + (px * 8) + 'deg) rotateX(' + (-py * 8) + 'deg)';
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+  }
+</script>
+
+<script>
+(function(){var el=document.getElementById('scrollProg');if(!el)return;function upd(){var h=document.documentElement;var s=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight||1);el.style.width=Math.min(100,Math.max(0,s*100))+'%';}window.addEventListener('scroll',upd,{passive:true});upd();})();
+</script>
+<script>
+(function(){var l=document.getElementById('pageLoader');if(!l)return;function h(){l.classList.add('hide');setTimeout(function(){l.remove();},500);}
+window.addEventListener('load',function(){setTimeout(h,250);});setTimeout(h,3500);})();
+</script>
+<script src="site-effects.js"></script>
+<script src="site-vfx.js"></script>
+</body>
+</html>
